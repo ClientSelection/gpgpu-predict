@@ -25,7 +25,7 @@ struct TextureAddress
     };
   };
 };
-
+#define ulong4 unsigned int
 // Store the start, end coordinate of node, and $link in 1 pixel
 struct PixelOfNode
 {
