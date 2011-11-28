@@ -47,39 +47,46 @@
 	\begin{itemize}
 		\item What does this core do well?
 		\begin{itemize}
-			\item Single Instruction, Single Data
+			\item Single Instruction, Single Data (SISD)
+			\begin{itemize}
+				\item Control logic built to support this
+			\end{itemize}
 		\end{itemize}
 		\item What does this core do poorly?
 		\begin{itemize}
-			\item Everything else
+			\item Single Instruction, Multiple Data (SIMD)
+			\item Multiple Instruction, Single Data (MISD)
+			\item Miltiple Instruction, Multiple Data (MIMD)
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Generic Multicore CPU Core Design}
+	\frametitle{Generic Multicore CPU Design}
 	\begin{tabular}{c}
 		\includegraphics[width=.75\textwidth]{Multicore-CPU-design.jpg}
 	\end{tabular}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Generic Multicore CPU Core Design (cont.)}
+	\frametitle{Generic Multicore CPU Design (cont.)}
 	\begin{itemize}
 		\item What does this core do well?
 		\begin{itemize}
-			\item Single Instruction, Single Data
+			\item SISD
 			\begin{itemize}
-				\item Either handling multiple independent processes or idling
+				\item Multiple independent processes
+				\item Idling
 			\end{itemize}
-			\item Multiple Instruction, Single Data
+			\item MISD
 			\begin{itemize}
-				\item Fetching independent sequential instructions from one process
+				\item Independent instructions from one process (out of order)
 			\end{itemize}
 		\end{itemize}
 		\item What does this core do poorly?
 		\begin{itemize}
-			\item Anything with multiple data
+			\item SIMD
+			\item MIMD
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -102,9 +109,9 @@
 		\end{itemize}
 		\item Why do this?
 		\begin{itemize}
-			\item GPUs are designed for graphics processing, so they're tailored specifically to those types of instruction streams
-			\item Graphics processing exhibits a lot of performing the same operations on many independent data elements
-			\item Because of this, multiple instruction streams are not necessary
+			\item Designed for graphics processing
+			\item Tailored specifically to those types of instruction streams
+			\item Performing the same operations on many independent data elements
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -114,14 +121,17 @@
 	\begin{itemize}
 		\item What does this core do well?
 		\begin{itemize}
-			\item Single Instruction, Multiple Data
+			\item SIMD
 			\begin{itemize}
-				\item Several similar data elements are assigned to a GPU core to perform the same computations on all elements
+				\item Similar contexts assigned to GPU
+				\item Core performs the same computations on all contexts
 			\end{itemize}
 		\end{itemize}
 		\item What does this core do poorly?
 		\begin{itemize}
-			\item Everything else
+			\item SISD
+			\item MISD
+			\item MIMD
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -136,36 +146,37 @@
 \begin{frame}
 	\frametitle{Generic GPU Core Design (cont.)}
 	\begin{itemize}
-		\item GPUs are able to modify their context storage locations to separate it into various smaller context sizes
-		\item This is done to try and hide stalls (more on this later)
-		\item All data elements assigned to a GPU core are called a 'warp'
+		\item GPUs can modify their context storage 
+		\item Separate into various smaller contexts
+		\item Try and hide stalls (more on this later)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Generic Multicore GPU Core Design}
+	\frametitle{Generic Multicore GPU Design}
 	\begin{tabular}{c}
 		\includegraphics[width=.75\textwidth]{GPU-Design---multiple-cores.jpg}
 	\end{tabular}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Generic Multicore GPU Core Design (cont.)}
+	\frametitle{Generic Multicore GPU Design (cont.)}
 	\begin{itemize}
 		\item What does this core do well?
 		\begin{itemize}
-			\item Single Instruction, Multiple Data
+			\item SIMD
 			\begin{itemize}
-				\item Each core could potentially be assigned the same instruction stream all working on subsets of the dataset
+				\item All cores assigned same instruction stream
 			\end{itemize}
-			\item Multiple Instruction, Multiple Data
+			\item MIMD
 			\begin{itemize}
-				\item GPU has the ability to assign multiple independent tasks, each with its own spatial locality which allows one instruction stream to process multiple data elements
+				\item Multiple independent tasks (vertices, fragments, etc.)
 			\end{itemize}
 		\end{itemize}
 		\item What does this core do poorly?
 		\begin{itemize}
-			\item Anything with single data
+			\item SISD
+			\item MISD
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -180,8 +191,8 @@
 \begin{frame}
 	\frametitle{GPU Context Interleaving (cont.)}
 	\begin{itemize}
-		\item By interleaving context execution in this manner, the GPU is always utilizing its ALUs optimally, even though contexts are waiting
-		\item However, if the wait time exceeds the number of interleaving contexts, then the GPU must stall
+		\item GPU is always utilizing ALUs optimally, even though contexts are waiting
+		\item If wait time exceeds certain amount, the GPU must stall
 	\end{itemize}
 \end{frame}
 
@@ -197,6 +208,37 @@
 \end{frame}
 
 \begin{frame}
+	\frametitle{Branch Prediction on CPU}
+	\begin{itemize}
+		\item On CPUs, each core has one execution context and one branch prediction table
+		\item Each context handles its own predictions
+		\begin{itemize}
+			\item No assistance from other threads 
+			\item No way to guarantee what the other threads are doing
+		\end{itemize}
+		\item On GPUs, each core has multiple execution contexts
+		\begin{itemize}
+			\item All contexts assigned to that core are performing the same operations
+			\item Couldn't we use this information to assist other contexts?
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{GPU Programs}
+	\begin{itemize}
+		\item GPUs bundle several contexts together into context groups
+		\item Collection of all contexts belonging to one GPU core is a 'warp'
+		\item All contexts within a warp will be subjected to the same instruction stream
+		\begin{itemize}
+			\item Processed context group by context group
+			\item High degree of spatial locality
+		\end{itemize}
+		\item Take advantage of information discovered by the first context group 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Our Proposal}
 	\begin{itemize}
 		\item Introduce 3 GPU Branch Predictors with the following features
@@ -207,10 +249,10 @@
 		\end{itemize}
 		\item Predictor table is the size of the instruction stream to avoid collisions
 		\begin{itemize}
-			\item We believe this is possible because the types of instruction streams that are issued to GPUs are by their nature not very long
+			\item Types of instruction streams that are issued to GPUs are by their nature not very long
 		\end{itemize}
-		\item Predictor entries are Smith 2-bit predictors
-		\item Compare the prediction accuracies across these implementations
+		\item Predictor table entries are Smith 2-bit predictors
+		\item Compare prediction accuracies across these implementations
 	\end{itemize}
 \end{frame}
 
