@@ -605,6 +605,7 @@ void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
         if( inst.active(t) ) {
             unsigned tid=m_config->warp_size*inst.warp_id()+t;
             m_thread[tid].m_functional_model_thread_state->ptx_exec_inst(inst,t);
+	 //   m_thread[tid].m_functional_model_thread_state->
             if( inst.has_callback(t) ) 
                m_warp[inst.warp_id()].inc_n_atomic();
             if (inst.space.is_local() && (inst.is_load() || inst.is_store())) {
@@ -640,6 +641,8 @@ void shader_core_ctx::issue_warp( warp_inst_t *&pipe_reg, const warp_inst_t *nex
     // extract thread done and next pc information from functional model here
     simt_mask_t thread_done;
     addr_vector_t next_pc;
+    
+    m_stats->shader_cycle_distro[0]++;
 
     unsigned wtid = warp_id * m_config->warp_size;
     for (unsigned i = 0; i < m_config->warp_size; i++) {

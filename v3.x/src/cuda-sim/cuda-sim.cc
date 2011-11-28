@@ -1575,7 +1575,8 @@ void gpgpu_cuda_ptx_sim_main_func( kernel_info_t &kernel )
                                                       //warpInstruction->set_active(ctaWarpBranchDivergenceMaskStacksList[i].top());
                                                        warpInstruction->set_active(mask);
                                                        currentThread->ptx_fetch_inst(*warpInstruction);
-                                                       //currentThread->get_inst()->print_insn();
+                                                       printf("EXECUTING THING");//currentThread->get_inst()->print_insn();
+                                                       fflush(0);
                                                        currentThread->ptx_exec_inst(*warpInstruction,0);
                                                        
                                                        
@@ -1588,7 +1589,7 @@ void gpgpu_cuda_ptx_sim_main_func( kernel_info_t &kernel )
                                                        if(currentThread->branch_taken())
                                                        {
                                                            takenBranches[j] = currentThread->branch_taken();
-                                                          // printf("found a branch \n");
+                                                           printf("found a branch \n");
                                                            //stop = true;
                                                            //abort();
                                                        }

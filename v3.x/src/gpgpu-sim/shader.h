@@ -1126,6 +1126,96 @@ private:
     const memory_config *m_memory_config;
 };
 
+class SaturatingRegister
+{
+private:
+	unsigned int reg;
+	unsigned int topmask;
+public:
+	SaturatingRegister()
+	{}
+	SaturatingRegister(const unsigned int& b):
+		reg(0),
+		topmask((1 << b)-1)
+	{
+		reg=((topmask>>1) + 1);
+	}
+	void init(const unsigned int& b)
+	{
+		topmask=(1 << b)-1;
+		reg=((topmask>>1)+1);
+	}
+	
+	SaturatingRegister(const SaturatingRegister& sr):
+		reg(sr.reg),
+		topmask(sr.topmask)
+	{}
+	bool msb() const
+	{
+		return (reg > (topmask>>1));
+	}
+	operator unsigned int()
+	{
+		return reg;
+	}
+	
+	SaturatingRegister& operator++()
+	{
+		if(reg!=topmask)
+			reg++;
+		return *this;
+	}
+	
+	SaturatingRegister& operator--()
+	{
+		if(reg!=0)
+			reg--;
+		return *this;
+	}
+	SaturatingRegister operator--(int)
+	{
+		if(reg!=0)
+		{
+			SaturatingRegister sr(*this);
+			reg--;
+			return sr;
+		}
+		return *this;
+	}
+	SaturatingRegister operator++(int)
+	{
+		if(reg!=topmask)
+		{
+			SaturatingRegister sr(*this);
+			reg++;
+			return sr;
+		}
+		return *this;
+	}
+};
+class branch_history_table
+{
+public:
+	std::vector<SaturatingRegister> values;
+	unsigned int tbits;
+	branch_history_table(unsigned int taddrbits,unsigned int regsize):
+		values(1 << taddrbits),
+		tbits(taddrbits)
+	{
+		for(unsigned int i=0;i<values.size();i++)
+		{
+			values[i].init(regsize);
+		}
+	}
+	bool predict(unsigned int pc)
+	{
+		unsigned int tloc=pc & ((1<<tbits)-1);
+		return values[tloc].msb();
+	}
+protected:
+	
+};
+
 class shader_core_ctx : public core_t {
 public:
     // creator:
@@ -1192,6 +1282,7 @@ public:
     void display_pipeline( FILE *fout, int print_mem, int mask3bit ) const;
 
 private:
+    branch_history_table *gbht;
     void init_warps(unsigned cta_id, unsigned start_thread, unsigned end_thread);
 
     address_type next_pc( int tid ) const;
