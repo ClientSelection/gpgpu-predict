@@ -87,6 +87,10 @@ shader_core_ctx::shader_core_ctx( class gpgpu_sim *gpu,
       m_pipeline_reg[j] = new warp_inst_t(config);
 
    m_thread = (thread_ctx_t*) calloc(sizeof(thread_ctx_t), config->n_thread_per_shader);
+   for(int i=0;i<config->n_thread_per_shader;i++)
+   {
+	   m_thread[i]->m_bht=new branch_history_table(14,2);
+   }
 
    m_not_completed = 0;
    m_active_threads.reset();
@@ -612,12 +616,11 @@ void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
 	    {
 		    
 		    bool taken=m_thread[tid].m_functional_model_thread_state->branch_taken();
-		    m_stats->predictions++;
+		    m_stats->core_predictions++;
 		    if(gbht->predict(bpc) != taken)
-			    m_stats->mispredictions++;
+			    m_stats->core_mispredictions++;
 		    
-		    printf("Current rate: %d:%d\n",m_stats->mispredictions,m_stats->predictions);
-		    
+		    printf("Current rate: %d:%d\n",m_stats->core_mispredictions,m_stats->core_predictions);
 	    }
 	 //   m_thread[tid].m_functional_model_thread_state->
             if( inst.has_callback(t) ) 

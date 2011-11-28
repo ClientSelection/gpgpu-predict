@@ -70,6 +70,105 @@
 //Set a hard limit of 32 CTAs per shader [cuda only has 8]
 #define MAX_CTA_PER_SHADER 32
 
+
+class SaturatingRegister
+{
+private:
+	unsigned int reg;
+	unsigned int topmask;
+public:
+	SaturatingRegister()
+	{}
+	SaturatingRegister(const unsigned int& b):
+		reg(0),
+		topmask((1 << b)-1)
+	{
+		reg=((topmask>>1) + 1);
+	}
+	void init(const unsigned int& b)
+	{
+		topmask=(1 << b)-1;
+		reg=((topmask>>1)+1);
+	}
+	
+	SaturatingRegister(const SaturatingRegister& sr):
+		reg(sr.reg),
+		topmask(sr.topmask)
+	{}
+	bool msb() const
+	{
+		return (reg > (topmask>>1));
+	}
+	operator unsigned int()
+	{
+		return reg;
+	}
+	
+	SaturatingRegister& operator++()
+	{
+		if(reg!=topmask)
+			reg++;
+		return *this;
+	}
+	
+	SaturatingRegister& operator--()
+	{
+		if(reg!=0)
+			reg--;
+		return *this;
+	}
+	SaturatingRegister operator--(int)
+	{
+		if(reg!=0)
+		{
+			SaturatingRegister sr(*this);
+			reg--;
+			return sr;
+		}
+		return *this;
+	}
+	SaturatingRegister operator++(int)
+	{
+		if(reg!=topmask)
+		{
+			SaturatingRegister sr(*this);
+			reg++;
+			return sr;
+		}
+		return *this;
+	}
+};
+class branch_history_table
+{
+public:
+	std::vector<SaturatingRegister> values;
+	unsigned int tbits;
+	branch_history_table(unsigned int taddrbits,unsigned int regsize):
+		values(1 << taddrbits),
+		tbits(taddrbits)
+	{
+		for(unsigned int i=0;i<values.size();i++)
+		{
+			values[i].init(regsize);
+		}
+	}
+	void learn(unsigned int pc,bool taken)
+	{
+		unsigned int tloc=pc & ((1<<tbits)-1);
+		if(taken)
+			++values[tloc];
+		else
+			--values[tloc];
+	}
+	bool predict(unsigned int pc)
+	{
+		unsigned int tloc=pc & ((1<<tbits)-1);
+		return values[tloc].msb();
+	}
+protected:
+	
+};
+
 class thread_ctx_t {
 public:
    class ptx_thread_info *m_functional_model_thread_state; 
@@ -83,6 +182,7 @@ public:
    unsigned n_l1_access_ac; 
 
    bool m_active; 
+   branch_history_table* m_bht;
 };
 
 class shd_warp_t {
@@ -92,6 +192,7 @@ public:
     {
         m_stores_outstanding=0;
         m_inst_in_pipeline=0;
+	m_bht=NULL;
         reset(); 
     }
     void reset()
@@ -106,6 +207,9 @@ public:
         m_done_exit=true;
         m_last_fetch=0;
         m_next=0;
+	if(m_bht)
+		delete m_bht;
+	m_bht=new branch_history_table(14,2);
     }
     void init( address_type start_pc, unsigned cta_id, unsigned wid, const std::bitset<MAX_WARP_SIZE> &active )
     {
@@ -233,6 +337,7 @@ private:
 
     unsigned m_stores_outstanding; // number of store requests sent but not yet acknowledged
     unsigned m_inst_in_pipeline;
+    branch_history_table *m_bht;
 };
 
 
@@ -1042,8 +1147,12 @@ struct shader_core_stats_pod {
     unsigned *last_shader_cycle_distro;
     unsigned *num_warps_issuable;
     unsigned gpgpu_n_stall_shd_mem;
-    unsigned mispredictions;
-    unsigned predictions;
+    unsigned core_mispredictions;
+    unsigned core_predictions;
+    unsigned warp_mispredicitons;
+    unsigned warp_predictions;
+    unsigned thread_predictions;
+    unsigned thread_mispredictions;
 
     //memory access classification
     int gpgpu_n_mem_read_local;
@@ -1128,104 +1237,6 @@ private:
     const memory_config *m_memory_config;
 };
 
-class SaturatingRegister
-{
-private:
-	unsigned int reg;
-	unsigned int topmask;
-public:
-	SaturatingRegister()
-	{}
-	SaturatingRegister(const unsigned int& b):
-		reg(0),
-		topmask((1 << b)-1)
-	{
-		reg=((topmask>>1) + 1);
-	}
-	void init(const unsigned int& b)
-	{
-		topmask=(1 << b)-1;
-		reg=((topmask>>1)+1);
-	}
-	
-	SaturatingRegister(const SaturatingRegister& sr):
-		reg(sr.reg),
-		topmask(sr.topmask)
-	{}
-	bool msb() const
-	{
-		return (reg > (topmask>>1));
-	}
-	operator unsigned int()
-	{
-		return reg;
-	}
-	
-	SaturatingRegister& operator++()
-	{
-		if(reg!=topmask)
-			reg++;
-		return *this;
-	}
-	
-	SaturatingRegister& operator--()
-	{
-		if(reg!=0)
-			reg--;
-		return *this;
-	}
-	SaturatingRegister operator--(int)
-	{
-		if(reg!=0)
-		{
-			SaturatingRegister sr(*this);
-			reg--;
-			return sr;
-		}
-		return *this;
-	}
-	SaturatingRegister operator++(int)
-	{
-		if(reg!=topmask)
-		{
-			SaturatingRegister sr(*this);
-			reg++;
-			return sr;
-		}
-		return *this;
-	}
-};
-class branch_history_table
-{
-public:
-	std::vector<SaturatingRegister> values;
-	unsigned int tbits;
-	branch_history_table(unsigned int taddrbits,unsigned int regsize):
-		values(1 << taddrbits),
-		tbits(taddrbits)
-	{
-		for(unsigned int i=0;i<values.size();i++)
-		{
-			values[i].init(regsize);
-		}
-	}
-	void learn(unsigned int pc,bool taken)
-	{
-		unsigned int tloc=pc & ((1<<tbits)-1);
-		if(taken)
-			++values[tloc];
-		else
-			--values[tloc];
-	}
-	bool predict(unsigned int pc)
-	{
-		unsigned int tloc=pc & ((1<<tbits)-1);
-		return values[tloc].msb();
-	}
-protected:
-	
-};
-
 class shader_core_ctx : public core_t {
 public:
     // creator:
@@ -1292,7 +1303,7 @@ public:
     void display_pipeline( FILE *fout, int print_mem, int mask3bit ) const;
 
 private:
-    branch_history_table *gbht;
+    branch_history_table *m_bht;
     void init_warps(unsigned cta_id, unsigned start_thread, unsigned end_thread);
 
     address_type next_pc( int tid ) const;
