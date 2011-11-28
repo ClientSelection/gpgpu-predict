@@ -27,37 +27,37 @@
 \begin{frame}
 	\frametitle{Generic CPU Core Design (cont.)}
 	\begin{itemize}
-		\item Regular Processor Logic
+		\item<1-> Regular Processor Logic
 		\begin{itemize}
-			\item Fetch/Decode Logic
-			\item ALU for execution
-			\item Execution Context (registers, etc.)
+			\item<2-> Fetch/Decode Logic
+			\item<2-> ALU for execution
+			\item<2-> Execution Context (registers, etc.)
 		\end{itemize}
-		\item Single Thread Speedup Logic
+		\item<3-> Single Thread Speedup Logic
 		\begin{itemize}
-			\item Control Logic
-			\item Branch Predictor
-			\item Memory Pre-fetcher
+			\item<4-> Control Logic
+			\item<4-> Branch Predictor
+			\item<4-> Memory Pre-fetcher
 		\end{itemize}
-		\item Data Cache
+		\item<5-> Data Cache
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Generic CPU Core Design (cont.)}
 	\begin{itemize}
-		\item What does this core do well?
+		\item<1-> What does this core do well?
 		\begin{itemize}
-			\item Single Instruction, Single Data (SISD)
+			\item<2-> Single Instruction, Single Data (SISD)
 			\begin{itemize}
-				\item Control logic built to support this
+				\item<2-> Control logic built to support this
 			\end{itemize}
 		\end{itemize}
-		\item What does this core do poorly?
+		\item<3-> What does this core do poorly?
 		\begin{itemize}
-			\item Single Instruction, Multiple Data (SIMD)
-			\item Multiple Instruction, Single Data (MISD)
-			\item Miltiple Instruction, Multiple Data (MIMD)
+			\item<4-> Single Instruction, Multiple Data (SIMD)
+			\item<4-> Multiple Instruction, Single Data (MISD)
+			\item<4-> Miltiple Instruction, Multiple Data (MIMD)
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -72,22 +72,22 @@
 \begin{frame}
 	\frametitle{Generic Multicore CPU Design (cont.)}
 	\begin{itemize}
-		\item What does this core do well?
+		\item<1-> What does this core do well?
 		\begin{itemize}
-			\item SISD
+			\item<2-> SISD
 			\begin{itemize}
-				\item Multiple independent processes
-				\item Idling
+				\item<2-> Multiple independent processes
+				\item<2-> Idling
 			\end{itemize}
-			\item MISD
+			\item<3-> MISD
 			\begin{itemize}
-				\item Independent instructions from one process (out of order)
+				\item<3-> Independent instructions from one process (out of order)
 			\end{itemize}
 		\end{itemize}
-		\item What does this core do poorly?
+		\item<4-> What does this core do poorly?
 		\begin{itemize}
-			\item SIMD
-			\item MIMD
+			\item<5-> SIMD
+			\item<5-> MIMD
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -102,17 +102,17 @@
 \begin{frame}
 	\frametitle{Generic GPU Core Design (cont.)}
 	\begin{itemize}
-		\item What's different?
+		\item<1-> What's different?
 		\begin{itemize}
-			\item Removed single threading speedup logic
-			\item Removed data cache
-			\item Added multiple execution contexts
+			\item<2-> Removed single threading speedup logic
+			\item<2-> Removed data cache
+			\item<2-> Added multiple execution contexts
 		\end{itemize}
-		\item Why do this?
+		\item<3-> Why do this?
 		\begin{itemize}
-			\item Designed for graphics processing
-			\item Tailored specifically to those types of instruction streams
-			\item Performing the same operations on many independent data elements
+			\item<4-> Designed for graphics processing
+			\item<4-> Tailored specifically to those types of instruction streams
+			\item<4-> Performing the same operations on many independent data elements
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -120,19 +120,19 @@
 \begin{frame}
 	\frametitle{Generic GPU Core Design (cont.)}
 	\begin{itemize}
-		\item What does this core do well?
+		\item<1-> What does this core do well?
 		\begin{itemize}
-			\item SIMD
+			\item<2-> SIMD
 			\begin{itemize}
-				\item Similar contexts assigned to GPU
-				\item Core performs the same computations on all contexts
+				\item<2-> Similar contexts assigned to GPU
+				\item<2-> Core performs the same computations on all contexts
 			\end{itemize}
 		\end{itemize}
-		\item What does this core do poorly?
+		\item<3-> What does this core do poorly?
 		\begin{itemize}
-			\item SISD
-			\item MISD
-			\item MIMD
+			\item<4-> SISD
+			\item<4-> MISD
+			\item<4-> MIMD
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -147,9 +147,9 @@
 \begin{frame}
 	\frametitle{Generic GPU Core Design (cont.)}
 	\begin{itemize}
-		\item GPUs can modify their context storage 
-		\item Separate into various smaller contexts
-		\item Try and hide stalls (more on this later)
+		\item<1-> GPUs can modify their context storage 
+		\item<2-> Separate into various smaller contexts
+		\item<3-> Try and hide stalls (more on this later)
 	\end{itemize}
 \end{frame}
 
@@ -163,21 +163,21 @@
 \begin{frame}
 	\frametitle{Generic Multicore GPU Design (cont.)}
 	\begin{itemize}
-		\item What does this core do well?
+		\item<1-> What does this core do well?
 		\begin{itemize}
-			\item SIMD
+			\item<2-> SIMD
 			\begin{itemize}
-				\item All cores assigned same instruction stream
+				\item<2-> All cores assigned same instruction stream
 			\end{itemize}
-			\item MIMD
+			\item<3-> MIMD
 			\begin{itemize}
-				\item Multiple independent tasks (vertices, fragments, etc.)
+				\item<3-> Multiple independent tasks (vertices, fragments, etc.)
 			\end{itemize}
 		\end{itemize}
-		\item What does this core do poorly?
+		\item<4-> What does this core do poorly?
 		\begin{itemize}
-			\item SISD
-			\item MISD
+			\item<5-> SISD
+			\item<5-> MISD
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -192,8 +192,8 @@
 \begin{frame}
 	\frametitle{GPU Context Interleaving (cont.)}
 	\begin{itemize}
-		\item GPU is always utilizing ALUs optimally, even though contexts are waiting
-		\item If wait time exceeds certain amount, the GPU must stall
+		\item<1-> GPU is always utilizing ALUs optimally, even though contexts are waiting
+		\item<2-> If wait time exceeds certain amount, the GPU must stall
 	\end{itemize}
 \end{frame}
 
@@ -203,38 +203,38 @@
 		\includegraphics[width=.75\textwidth]{GPU-context-interleaving-2.jpg}
 	\end{tabular}
 	\begin{itemize}
-		\item Red arrows indicate idle cycles due to stalling for 1st context group's branch
-		\item What if we could avoid this?
+		\item<1-> Red arrows indicate idle cycles due to stalling for 1st context group's branch
+		\item<2-> What if we could avoid this?
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{GPU Programs}
 	\begin{itemize}
-		\item GPUs bundle several contexts together into context groups
-		\item Collection of all contexts belonging to one GPU core is a 'warp'
-		\item All contexts within a warp will be subjected to the same instruction stream
+		\item<1-> GPUs bundle several contexts together into context groups
+		\item<2-> Collection of all contexts belonging to one GPU core is a 'warp'
+		\item<3-> All contexts within a warp will be subjected to the same instruction stream
 		\begin{itemize}
-			\item Processed context group by context group
-			\item High degree of spatial locality
+			\item<3-> Processed context group by context group
+			\item<3-> High degree of spatial locality
 		\end{itemize}
-		\item Take advantage of information discovered by the first context group 
+		\item<4-> Take advantage of information discovered by the first context group 
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Branch Prediction on CPU}
 	\begin{itemize}
-		\item On CPUs, each core has one execution context and one branch prediction table
-		\item Each context handles its own predictions
+		\item<1-> On CPUs, each core has one execution context and one branch prediction table
+		\item<2-> Each context handles its own predictions
 		\begin{itemize}
-			\item No assistance from other threads 
-			\item No way to guarantee what the other threads are doing
+			\item<2-> No assistance from other threads 
+			\item<2-> No way to guarantee what the other threads are doing
 		\end{itemize}
-		\item On GPUs, each core has multiple execution contexts
+		\item<3-> On GPUs, each core has multiple execution contexts
 		\begin{itemize}
-			\item All contexts assigned to that core are performing the same operations
-			\item Couldn't we use this information to assist other contexts?
+			\item<3-> All contexts assigned to that core are performing the same operations
+			\item<3-> Couldn't we use this information to assist other contexts?
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -242,9 +242,9 @@
 \begin{frame}[fragile]
 	\frametitle{Branch Prediction Example}
 	\begin{itemize}
-		\item Matrix Vector Multiply
-		\item Parallel work ID stop in parallel
-		\item
+		\item<1-> Matrix Vector Multiply
+		\item<2-> Parallel work ID stop in parallel
+		\item<3->
 	\begin{lstlisting}[language=C,basicstyle=\footnotesize,frame=single,tabsize=4,title=GemV.cl]
 __kernel gemv(double * y, double * A, double * x)
 {
@@ -254,26 +254,26 @@ __kernel gemv(double * y, double * A, double * x)
         y[rowout] += A[rowout,i] * x[i];
 }
 	\end{lstlisting}
-		\item Prediction fails to detect end of loop if BHT per thread.
-		\item Shared BHT per warp mispredicts end of first rows but predicts the rest.
+		\item<4-> Prediction fails to detect end of loop if BHT per thread.
+		\item<5-> Shared BHT per warp mispredicts end of first rows but predicts the rest.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Our Proposal}
 	\begin{itemize}
-		\item Introduce 3 GPU Branch Predictors with the following features
+		\item<1-> Introduce 3 GPU Branch Predictors with the following features
 		\begin{itemize}
-			\item One predictor is shared amongst the contexts within a GPU core
-			\item One predictor is shared only amongst its context group (1 per group)
-			\item One predictor is shared only amongst its context (1 per context)
+			\item<2-> One predictor is shared amongst the contexts within a GPU core
+			\item<2-> One predictor is shared only amongst its context group (1 per group)
+			\item<2-> One predictor is shared only amongst its context (1 per context)
 		\end{itemize}
-		\item Predictor table is the size of the instruction stream to avoid collisions
+		\item<3-> Predictor table is the size of the instruction stream to avoid collisions
 		\begin{itemize}
-			\item Types of instruction streams that are issued to GPUs are by their nature not very long
+			\item<3-> Types of instruction streams that are issued to GPUs are by their nature not very long
 		\end{itemize}
-		\item Predictor table entries are Smith 2-bit predictors
-		\item Compare prediction accuracies across these implementations
+		\item<4-> Predictor table entries are Smith 2-bit predictors
+		\item<5-> Compare prediction accuracies across these implementations
 	\end{itemize}
 \end{frame}
 
@@ -297,7 +297,7 @@ __kernel gemv(double * y, double * A, double * x)
 		\includegraphics[width=.5\textwidth]{Our-GPU---per-element-predictor.jpg}
 	\end{tabular}
 	\begin{itemize}
-		\item This implementation most closely resembles how a regular CPU core handles branch prediction
+		\item<1-> This implementation most closely resembles how a regular CPU core handles branch prediction
 	\end{itemize}
 \end{frame}
 
@@ -305,8 +305,8 @@ __kernel gemv(double * y, double * A, double * x)
     \frametitle{Branch Predictor}
     \includegraphics[height=.6\textheight]{bht.png}
     \begin{itemize}
-     \item Limited Kernel Size.  Max 16k instructions.
-     \item 16k BHT entries==no collisions.  4KiB of memory.
+     \item<1-> Limited Kernel Size.  Max 16k instructions.
+     \item<2-> 16k BHT entries==no collisions.  4KiB of memory.
     \end{itemize}
 \end{frame}
 
@@ -321,12 +321,12 @@ __kernel gemv(double * y, double * A, double * x)
 \begin{frame}
    \frametitle{Experiment}
    \begin{itemize}
-    \item Must have appropriate simulator modeling SIMT architecture.
-    \item SimpleScalar NOT sufficient
-    \item GPGPU-Sim: Rewrite based on SimpleScalar.
-    \item Simulates an NVIDIA Quadro 5800. (16k register file, 4 GB ram, 32 cores,1024 contexts)
-    \item Creates libcuda.so and libOpenCL.so to intercept GPU commands from CPU program.
-    \item Requires NVIDIA hardware (driver does compilation) to build benchmarks.
+    \item<1-> Must have appropriate simulator modeling SIMT architecture.
+    \item<2-> SimpleScalar NOT sufficient
+    \item<3-> GPGPU-Sim: Rewrite based on SimpleScalar.
+    \item<4-> Simulates an NVIDIA Quadro 5800. (16k register file, 4 GB ram, 32 cores,1024 contexts)
+    \item<5-> Creates libcuda.so and libOpenCL.so to intercept GPU commands from CPU program.
+    \item<6-> Requires NVIDIA hardware (driver does compilation) to build benchmarks.
    \end{itemize}
 \end{frame}
 
@@ -339,22 +339,22 @@ __kernel gemv(double * y, double * A, double * x)
 \begin{frame}
  \frametitle{Benchmarks (ISPASS09)}
  \begin{itemize}
-  \item Subset of ISPASS09 CUDA benchmarks
-  \item Some benchmarks failed
-  \item Run for 4 days
-  \item CPU component failed to meet dependencies
-  \item CUDA Architecture unsupported (double/single)
-  \item No branching!  (AES)
+  \item<1-> Subset of ISPASS09 CUDA benchmarks
+  \item<2-> Some benchmarks failed
+  \item<3-> Run for 4 days
+  \item<4-> CPU component failed to meet dependencies
+  \item<5-> CUDA Architecture unsupported (double/single)
+  \item<6-> No branching!  (AES)
  \end{itemize}
 \end{frame}
 
 \begin{frame}
  \frametitle{ISPASS09 Benchmarks (cont.)}
 \begin{itemize}
- \item \emph{NQU} Solve the NQUEENS problem
- \item \emph{NN} Classify images with a neural net
-  \item \emph{RAY} Raytrace a scene
-\item \emph{BFS} Breadth-First Search a graph.
+ \item<1-> \emph{NQU} Solve the NQUEENS problem
+ \item<2-> \emph{NN} Classify images with a neural net
+  \item<3-> \emph{RAY} Raytrace a scene
+\item<4-> \emph{BFS} Breadth-First Search a graph.
 \end{itemize}
 \end{frame}
 
@@ -366,8 +366,8 @@ __kernel gemv(double * y, double * A, double * x)
 \begin{frame}
  \frametitle{Results (cont.)}
 \begin{itemize}
- \item Significant improvement over per-thread predictor
- \item NQUEENS failed...DP solution mispredicts parallel neighbors?
+ \item<1-> Significant improvement over per-thread predictor
+ \item<2-> NQUEENS failed...DP solution mispredicts parallel neighbors?
 \end{itemize}
 
 \end{frame}
@@ -375,8 +375,8 @@ __kernel gemv(double * y, double * A, double * x)
 \begin{frame}
  \frametitle{Any Questions?}
 \begin{itemize}
- \item Question: What information is available to a GPU for branch prediction that is not available for a CPU?
- \item Answer: The branch history from parallel threads in a warp or core.
+ \item<1-> Question: What information is available to a GPU for branch prediction that is not available for a CPU?
+ \item<2-> Answer: The branch history from parallel threads in a warp or core.
 \end{itemize}
 
 \end{frame}
