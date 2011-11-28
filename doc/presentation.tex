@@ -173,9 +173,8 @@
 \begin{frame}
 	\frametitle{GPU Context Interleaving}
 	\begin{tabular}{c}
-		\includegraphics[width=.75\textwidth]{}
+		\includegraphics[width=.75\textwidth]{GPU-context-interleaving.jpg}
 	\end{tabular}
-	GPU Interleaving image
 \end{frame}
 
 \begin{frame}
@@ -183,6 +182,16 @@
 	\begin{itemize}
 		\item By interleaving context execution in this manner, the GPU is always utilizing its ALUs optimally, even though contexts are waiting
 		\item However, if the wait time exceeds the number of interleaving contexts, then the GPU must stall
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{GPU Context Interleaving (cont.)}
+	\begin{tabular}{c}
+		\includegraphics[width=.75\textwidth]{GPU-context-interleaving-2.jpg}
+	\end{tabular}
+	\begin{itemize}
+		\item Red arrows indicate idle cycles due to stalling for 1st context group's branch
 		\item What if we could avoid this?
 	\end{itemize}
 \end{frame}
@@ -190,25 +199,51 @@
 \begin{frame}
 	\frametitle{Our Proposal}
 	\begin{itemize}
-		\item Introduce a GPU Branch Predictor with the following features
+		\item Introduce 3 GPU Branch Predictors with the following features
 		\begin{itemize}
-			\item Predictor is shared amongst the contexts within a GPU
-			\item Predictor table is the size of the instruction stream to avoid collisions
-			\item Predictor entries are Smith 2-bit predictors
+			\item One predictor is shared amongst the contexts within a GPU
+			\item One predictor is shared only amongst its context group (1 per group)
+			\item One predictor is shared only amongst its context (1 per context)
 		\end{itemize}
+		\item Predictor table is the size of the instruction stream to avoid collisions
+		\begin{itemize}
+			\item We believe this is possible because the types of instruction streams that are issued to GPUs are by their nature not very long
+		\end{itemize}
+		\item Predictor entries are Smith 2-bit predictors
+		\item Compare the prediction accuracies across these implementations
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Our Proposal (cont.)}
 	\begin{tabular}{c}
-		\includegraphics[width=.75\textwidth]{}
+		\includegraphics[width=.5\textwidth]{Our-GPU---per-core-predictor.jpg}
 	\end{tabular}
-	Our GPU interleaving replacement image
 \end{frame}
 
+\begin{frame}
+	\frametitle{Our Proposal (cont.)}
+	\begin{tabular}{c}
+		\includegraphics[width=.5\textwidth]{Our-GPU---per-context-group-predictor.jpg}
+	\end{tabular}
+\end{frame}
 
+\begin{frame}
+	\frametitle{Our Proposal (cont.)}
+	\begin{tabular}{c}
+		\includegraphics[width=.5\textwidth]{Our-GPU---per-element-predictor.jpg}
+	\end{tabular}
+	\begin{itemize}
+		\item This implementation most closely resembles how a regular CPU core handles branch prediction
+	\end{itemize}
+\end{frame}
 
+\begin{frame}
+	\frametitle{Our Proposal (cont.)}
+	\begin{tabular}{c}
+		\includegraphics[width=.75\textwidth]{GPU-predict-context.jpg}
+	\end{tabular}
+\end{frame}
 
 
 
