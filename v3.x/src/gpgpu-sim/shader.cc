@@ -89,7 +89,7 @@ shader_core_ctx::shader_core_ctx( class gpgpu_sim *gpu,
    m_thread = (thread_ctx_t*) calloc(sizeof(thread_ctx_t), config->n_thread_per_shader);
    for(int i=0;i<config->n_thread_per_shader;i++)
    {
-	   m_thread[i]->m_bht=new branch_history_table(14,2);
+	   m_thread[i].m_bht=new branch_history_table(14,2);
    }
 
    m_not_completed = 0;
@@ -208,7 +208,7 @@ shader_core_ctx::shader_core_ctx( class gpgpu_sim *gpu,
    m_last_inst_gpu_sim_cycle = 0;
    m_last_inst_gpu_tot_sim_cycle = 0;
    
-   gbht=new branch_history_table(14,2);
+   m_bht=new branch_history_table(14,2);
 }
 
 void shader_core_ctx::reinit(unsigned start_thread, unsigned end_thread, bool reset_not_completed ) 
@@ -460,7 +460,12 @@ void shader_core_stats::print( FILE* fout ) const
    fprintf(fout, "gpgpu_stall_shd_mem[l_mem_ld][wb_rsrv_fail] = %d\n", gpu_stall_shd_mem_breakdown[L_MEM_ST][WB_CACHE_RSRV_FAIL]);
 
    fprintf(fout, "gpu_reg_bank_conflict_stalls = %d\n", gpu_reg_bank_conflict_stalls);
-
+   
+   fprintf(fout, "--BP Statistics--\n");
+   fprintf(fout, "core level: mispredictions: %d predictions %d miss-rate %f\n",core_mispredictions,core_predictions,(double)core_mispredictions / (double)core_predictions);
+   fprintf(fout, "warp level: mispredictions: %d predictions %d miss-rate %f\n",warp_mispredictions,warp_predictions,(double)warp_mispredictions / (double)warp_predictions);
+   fprintf(fout, "thread level: mispredictions: %d predictions %d miss-rate %f\n",thread_mispredictions,thread_predictions,(double)thread_mispredictions / (double)thread_predictions);
+   fprintf(fout, "ENDBP\n");
    fprintf(fout, "Warp Occupancy Distribution:\n");
    fprintf(fout, "Stall:%d\t", shader_cycle_distro[2]);
    fprintf(fout, "W0_Idle:%d\t", shader_cycle_distro[0]);
@@ -614,13 +619,29 @@ void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
             m_thread[tid].m_functional_model_thread_state->ptx_exec_inst(inst,t);
 	    if(inst.op==BRANCH_OP)
 	    {
-		    
+		    branch_history_table* bht=m_bht;
 		    bool taken=m_thread[tid].m_functional_model_thread_state->branch_taken();
-		    m_stats->core_predictions++;
-		    if(gbht->predict(bpc) != taken)
-			    m_stats->core_mispredictions++;
+			//printf("Branch taken=%d at %d\n",(int) taken,bpc);
+
 		    
-		    printf("Current rate: %d:%d\n",m_stats->core_mispredictions,m_stats->core_predictions);
+		    m_stats->core_predictions++;
+		    if(bht->predict(bpc) != taken)
+			    m_stats->core_mispredictions++;
+		    bht->learn(bpc,taken);
+		    
+		    bht=m_warp[inst.warp_id()].m_bht;
+		    m_stats->warp_predictions++;
+		    if(bht->predict(bpc) != taken)
+			    m_stats->warp_mispredictions++;
+		    bht->learn(bpc,taken);
+		    
+		    m_stats->thread_predictions++;
+		    bht=m_thread[tid].m_bht;
+		    if(bht->predict(bpc) != taken)
+			    m_stats->thread_mispredictions++;
+		    bht->learn(bpc,taken);
+		    
+		    //printf("Current rate: %d:%d\n",m_stats->core_mispredictions,m_stats->core_predictions);
 	    }
 	 //   m_thread[tid].m_functional_model_thread_state->
             if( inst.has_callback(t) ) 

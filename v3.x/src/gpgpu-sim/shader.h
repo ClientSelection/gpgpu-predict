@@ -187,6 +187,8 @@ public:
 
 class shd_warp_t {
 public:
+	
+    branch_history_table *m_bht;
     shd_warp_t( class shader_core_ctx *shader, unsigned warp_size) 
         : m_shader(shader), m_warp_size(warp_size)
     {
@@ -337,7 +339,6 @@ private:
 
     unsigned m_stores_outstanding; // number of store requests sent but not yet acknowledged
     unsigned m_inst_in_pipeline;
-    branch_history_table *m_bht;
 };
 
 
@@ -1149,7 +1150,7 @@ struct shader_core_stats_pod {
     unsigned gpgpu_n_stall_shd_mem;
     unsigned core_mispredictions;
     unsigned core_predictions;
-    unsigned warp_mispredicitons;
+    unsigned warp_mispredictions;
     unsigned warp_predictions;
     unsigned thread_predictions;
     unsigned thread_mispredictions;
