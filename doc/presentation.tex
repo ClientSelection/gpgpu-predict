@@ -282,7 +282,7 @@
 
 \begin{frame}
     \frametitle{Branch Predictor}
-    \includegraphics[height=.9\textheight]{bht.png}
+    \includegraphics[height=.6\textheight]{bht.png}
     \begin{itemize}
      \item Limited Kernel Size.  Max 16k instructions.
      \item 16k BHT entries==no collisions.  4KiB of memory.
@@ -295,6 +295,24 @@
 	\begin{tabular}{c}
 		\includegraphics[width=.75\textwidth]{GPU-predict-context.jpg}
 	\end{tabular}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Experiment}
+   \begin{itemize}
+    \item Must have appropriate simulator modeling SIMT architecture.
+    \item SimpleScalar NOT sufficient
+    \item GPGPU-Sim: Rewrite based on SimpleScalar.
+    \item Simulates an NVIDIA Quadro 5800. (16k register file, 4 GB ram, 32 cores,1024 contexts)
+    \item Creates libcuda.so and libOpenCL.so to intercept GPU commands from CPU program.
+    \item Requires NVIDIA hardware (driver does compilation) to build benchmarks.
+   \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Simulation Architecture (slide courtesy of gpgpu)}
+  \includegraphics[width=.9\textwidth]{uarch.jpg}
+
 \end{frame}
 
 
