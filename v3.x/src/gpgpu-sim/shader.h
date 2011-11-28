@@ -1042,6 +1042,8 @@ struct shader_core_stats_pod {
     unsigned *last_shader_cycle_distro;
     unsigned *num_warps_issuable;
     unsigned gpgpu_n_stall_shd_mem;
+    unsigned mispredictions;
+    unsigned predictions;
 
     //memory access classification
     int gpgpu_n_mem_read_local;
@@ -1206,6 +1208,14 @@ public:
 		{
 			values[i].init(regsize);
 		}
+	}
+	void learn(unsigned int pc,bool taken)
+	{
+		unsigned int tloc=pc & ((1<<tbits)-1);
+		if(taken)
+			++values[tloc];
+		else
+			--values[tloc];
 	}
 	bool predict(unsigned int pc)
 	{

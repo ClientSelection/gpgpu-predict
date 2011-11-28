@@ -203,6 +203,8 @@ shader_core_ctx::shader_core_ctx( class gpgpu_sim *gpu,
 
    m_last_inst_gpu_sim_cycle = 0;
    m_last_inst_gpu_tot_sim_cycle = 0;
+   
+   gbht=new branch_history_table(14,2);
 }
 
 void shader_core_ctx::reinit(unsigned start_thread, unsigned end_thread, bool reset_not_completed ) 
@@ -604,7 +606,19 @@ void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
     for ( unsigned t=0; t < m_config->warp_size; t++ ) {
         if( inst.active(t) ) {
             unsigned tid=m_config->warp_size*inst.warp_id()+t;
+	    unsigned int bpc=m_thread[tid].m_functional_model_thread_state->get_pc();
             m_thread[tid].m_functional_model_thread_state->ptx_exec_inst(inst,t);
+	    if(inst.op==BRANCH_OP)
+	    {
+		    
+		    bool taken=m_thread[tid].m_functional_model_thread_state->branch_taken();
+		    m_stats->predictions++;
+		    if(gbht->predict(bpc) != taken)
+			    m_stats->mispredictions++;
+		    
+		    printf("Current rate: %d:%d\n",m_stats->mispredictions,m_stats->predictions);
+		    
+	    }
 	 //   m_thread[tid].m_functional_model_thread_state->
             if( inst.has_callback(t) ) 
                m_warp[inst.warp_id()].inc_n_atomic();
@@ -637,16 +651,16 @@ void shader_core_ctx::issue_warp( warp_inst_t *&pipe_reg, const warp_inst_t *nex
         m_barriers.warp_reaches_barrier(m_warp[warp_id].get_cta_id(),warp_id);
     else if( next_inst->op == MEMORY_BARRIER_OP ) 
         m_warp[warp_id].set_membar();
-
     // extract thread done and next pc information from functional model here
     simt_mask_t thread_done;
     addr_vector_t next_pc;
     
-    m_stats->shader_cycle_distro[0]++;
+    //m_stats->shader_cycle_distro[0]++;
 
     unsigned wtid = warp_id * m_config->warp_size;
     for (unsigned i = 0; i < m_config->warp_size; i++) {
-         if( ptx_thread_done(wtid+i) ) {
+	 
+	 if( ptx_thread_done(wtid+i) ) {
              thread_done.set(i);
              next_pc.push_back( (address_type)-1 );
          } else {
