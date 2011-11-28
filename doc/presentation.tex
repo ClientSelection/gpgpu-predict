@@ -1,4 +1,5 @@
 \documentclass{beamer}
+\usepackage{listings}
 
 \title
 {SIMT Branch Prediction}
@@ -208,6 +209,20 @@
 \end{frame}
 
 \begin{frame}
+	\frametitle{GPU Programs}
+	\begin{itemize}
+		\item GPUs bundle several contexts together into context groups
+		\item Collection of all contexts belonging to one GPU core is a 'warp'
+		\item All contexts within a warp will be subjected to the same instruction stream
+		\begin{itemize}
+			\item Processed context group by context group
+			\item High degree of spatial locality
+		\end{itemize}
+		\item Take advantage of information discovered by the first context group 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Branch Prediction on CPU}
 	\begin{itemize}
 		\item On CPUs, each core has one execution context and one branch prediction table
@@ -224,17 +239,22 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}
-	\frametitle{GPU Programs}
+\begin{frame}[fragile]
+	\frametitle{Branch Prediction Example}
 	\begin{itemize}
-		\item GPUs bundle several contexts together into context groups
-		\item Collection of all contexts belonging to one GPU core is a 'warp'
-		\item All contexts within a warp will be subjected to the same instruction stream
-		\begin{itemize}
-			\item Processed context group by context group
-			\item High degree of spatial locality
-		\end{itemize}
-		\item Take advantage of information discovered by the first context group 
+		\item Matrix Vector Multiply
+		\item Parallel work ID stop in parallel
+		\item
+	\begin{lstlisting}[language=C]
+kernel emv(double * y, double * A, double * x)
+{
+	int rowout = cl_thread_id(0);  // index
+	y[rowout] = 0.0;
+	for(int i = 0; i < A.cols; i++)
+		y[rowout] += A[rowout,i] * x[i];
+}
+	\end{lstlisting}
+		\item Prediction fails for last row
 	\end{itemize}
 \end{frame}
 
@@ -243,7 +263,7 @@
 	\begin{itemize}
 		\item Introduce 3 GPU Branch Predictors with the following features
 		\begin{itemize}
-			\item One predictor is shared amongst the contexts within a GPU
+			\item One predictor is shared amongst the contexts within a GPU core
 			\item One predictor is shared only amongst its context group (1 per group)
 			\item One predictor is shared only amongst its context (1 per context)
 		\end{itemize}
@@ -360,6 +380,13 @@
 \end{frame}
 
 
+\begin{frame}
+	\frametitle{Sources}
+	\begin{itemize}
+		\item Kayvon Fatahalian's SIGGRAPH 2009 Talk on How Shader Cores Work (referenced several of his diagrams)
+		\item GPGPU Simulator (http://www.ece.ubc.ca/~aamodt/gpgpu-sim/)
+	\end{itemize}
+\end{frame}
 
 
 
