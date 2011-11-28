@@ -315,6 +315,53 @@
 
 \end{frame}
 
+\begin{frame}
+ \frametitle{Benchmarks (ISPASS09)}
+ \begin{itemize}
+  \item Subset of ISPASS09 CUDA benchmarks
+  \item Some benchmarks failed
+  \item Run for 4 days
+  \item CPU component failed to meet dependencies
+  \item CUDA Architecture unsupported (double/single)
+  \item No branching!  (AES)
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{ISPASS09 Benchmarks (cont.)}
+\begin{itemize}
+ \item \emph{NQU} Solve the NQUEENS problem
+ \item \emph{NN} Classify images with a neural net
+  \item \emph{RAY} Raytrace a scene
+\item \emph{BFS} Breadth-First Search a graph.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Results}
+\includegraphics[width=.9\textwidth]{data.png}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Results (cont.)}
+\begin{itemize}
+ \item Significant improvement over per-thread predictor
+ \item NQUEENS failed...DP solution mispredicts parallel neighbors?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Any Questions?}
+\begin{itemize}
+ \item 
+\end{itemize}
+
+\end{frame}
+
+
+
+
 
 
 
