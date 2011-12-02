@@ -139,25 +139,99 @@ Recently, CPU designers have begun building chips with multiple cores.  This giv
 	\captionof{figure}{}
 \end{center}
 
-GPU cores have the ability to modify their context storage areas to vary the number of context elements it holds, which affects the number of context groups for the core to alternate between during computation.  These alternating context groups is how the GPU tries to hide data stalls.  When a group encounters a branch, since there is no forwarding logic, the group must wait for the data.  While this is happening, the core switches to the next group and performs the same instructions that it just executed on the previous group.  By alternating these groups in this manner, called interleaving, the GPU can hide the vast majority of data stalls or branch calculation waits.
+GPU cores have the ability to modify their context storage areas to vary the number of context elements it holds (by modifying the size of the context elements), which affects the number of context groups for the core to alternate between during computation.  These alternating context groups is how the GPU tries to hide data stalls.  When a group encounters a branch, since there is no forwarding logic, the group must wait for the data.  While this is happening, the core switches to the next group and performs the same instructions that it just executed on the previous group.  By alternating these groups in this manner, called interleaving, the GPU can hide the vast majority of data stalls or branch calculation waits.
 
 \begin{center}
 	\includegraphics[width=.45\textwidth]{GPU-context-interleaving.jpg}
 	\captionof{figure}{}
 \end{center}
 
-However, what if the stall time exceeds the amount of time it would take this particular GPU core to alternate amongst all if its context groups?  In this case the core would be required to wait until the stall is resolved.
-
+However, what if the stall time exceeds the amount of time it would take this particular GPU core to alternate amongst all if its context groups?  In this case, there is nothing that can be done to avoid the stall, and the core must wait.  But what if this could be avoided?  Our proposal will endeavor to solve this problem.
 \begin{center}
 	\includegraphics[width=.45\textwidth]{GPU-context-interleaving-2.jpg}
 	\captionof{figure}{}
 \end{center}
 
-In this case, there is nothing that can be done to avoid the stall, and the core must wait.  But what if this could be avoided?  
+The collection of all context belonging to one GPU core is called a 'warp', and the number of contexts in a warp is  its 'warp factor'.  All contexts within a warp will be subjected to the same instruction stream.  As mentioned before, these contexts will be processed context group by context group.  Due to the nature of how data is assigned to these context elements, there is a great deal of spatial locality amongst the contexts in a warp.  Our proposal believes that there is a way to use the information discovered by the first context group being processed by an instruction stream to assist later context groups in their knowledge of stalls.
+
+On a CPU, each core only has one execution context and one branch prediction table.  This shows that each context handles its own branches and receives no external assistance from other threads.  No external assistance can be offered becuase there is no way to guarantee what the other threads are working on and if it could be useful to the current thread.  In contrast, a GPU core has multiple contexts per core that are all performing the same operations.  Is it possible to use this information to assist other contexts in their branch stalls?
+
+We propose to implement 3 GPU Branch Predictors with the following features:
+\begin{itemize}
+	\item One predictor is shared amongst the contexts within a GPU core
+	\item One predictor is shared only amongst its context group (1 per group)
+	\item One predictor is shared only amongst its context (1 per context)
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width=.2\textwidth]{Our-GPU---per-core-predictor.jpg}
+	\captionof{figure}{One shared BHT for the entire core.}
+\end{center}
+
+\begin{center}
+	\includegraphics[width=.2\textwidth]{Our-GPU---per-context-group-predictor.jpg}
+	\captionof{figure}{One shared BHT for each context group.}
+\end{center}
+
+\begin{center}
+	\includegraphics[width=.2\textwidth]{Our-GPU---per-element-predictor.jpg}
+	\captionof{figure}{One BHT for each individual context. This implementation most closely resembles how a general CPU would handle branch prediction.}
+\end{center}
+
+In addition, the size of the branch history table will be exactly the size of the maximum instruction stream length, which is 16,384 instructions.  We chose this size so that there would be absolutely no predictor collisions, and each instruction location will have its own dedicated predictor.  The predictors we will be using are Smith 2-bit predictors.
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{bht.png}
+	\captionof{figure}{Smith 2-bit predictor.}
+\end{center}
+
+We will compare prediction accuracies across these three implementations.  Our goal is that after the initial training of the predictors, the GPU cores will process their contexts groups as shown in the figure below:
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{GPU-predict-context.jpg}
+	\captionof{figure}{Context interleaving is not necessary, as the groups are properly predicting where to branch and continue operation.}
+\end{center}
 
 \section{Simulation Methodology}
 
+In order to properly model our proposal, we must have an appropriate simulator modeling SIMD/SIMT architecture.  The SimpleScalar simulator was not sufficient, as it simulates CPU behaviors (including all of the behaviors that are removed from GPUs).  Due to our truncated timetable, we couldn't properly modify SimpleScalar, so we needed to find a GPU-specific simulator.  We found GPGPU-Sim, which is a rewrite based on the SimpleScalar simulator.  This simulator simulates an NVIDIA Quadro 5800 graphics card, with the following statistics:
+
+\begin{itemize}
+	\item 16k register file
+	\item 4 GB RAM
+	\item 32 GPU cores
+	\item 1024 contexts
+\end{itemize}
+
+This simulator creates libcuda.so and libOpenCL.so files on the fly to intercept GPU commands from CPU program during execution.  This method of execution requires NVIDIA hardware to build benchmarks because the driver does the compilations.
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{uarch1.jpg}
+	\captionof{figure}{GPGPU-Sim architecture.}
+\end{center}
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{uarch2.jpg}
+	\captionof{figure}{GPGPU-Sim Shader core.}
+\end{center}
+
+Since we are simulating GPU hardware, it is important to run our simulator on GPU-specific benchmarks as gcc, gzip, and other common benchmarks are designed to benchmark CPU hardware changes.  We settled on using a subset of ISPASS09 CUDA benchmarks.  We used a subset of these benchmarks because some of them were failing right out of the box.  One benchmark ran continuously for 4 days before we decided to kill it and not use it.  Other benchmarks said the CPU component was failing to meet its dependencies or that the CUDA architecture was unsupported (double precision vs. single precision computations).  Yet another benchmark was written so well that it had no branching instructions during execution at all.
+
+After deciding which benchmarks weren't going to show us anything useful (or run in a nominal amount of time for our deadlines), we settled on a suite of four benchmarks:
+
+\begin{itemize}
+	\item \emph{NQU} - Solving the NQUEENS problem
+	\item \emph{NN} - Classification of images with a neural net
+	\item \emph{RAY} - Raytracing a scene
+	\item \emph{BFS} - Breadth-First Search of a graph
+\end{itemize}
+
 \section{Simulation Results}
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{data.png}
+	\captionof{figure}{}
+\end{center}
 
 
 \section{Conclusions}
