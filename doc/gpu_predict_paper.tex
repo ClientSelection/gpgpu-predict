@@ -11,6 +11,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{array}
+\usepackage{enumerate}
 
 % *** CITATION PACKAGES ***
 %
@@ -111,7 +112,33 @@ Email: \texttt{narnold@knights.ucf.edu}}
 
 \section{Related Work}
 
-\subsection{}
+\subsection{Branch Prediction}
+
+We first wanted to take a look at some techniques being researched about how to structure branch predictors in order to see if there were any innovations that would perform better over what we had already learned in class.  We came across a paper by Yeh and Patt \cite{Yeh91}.  They discussed implementing an adaptive branch predictor that would use information being collected at runtime, as opposed to other schemes which would require a pre-run of the program for training.  Their setup requires a Branch History Table and a Branch History Pattern Table, which is updated based on the outcomes of the branches during run-time.  This seemed useful to use due to the fact that their approach would be utilizing run-time information, which is something we are striving to utilize, as well.
+
+Another branch prediction paper we came across was by Eden and Mudge \cite{yags98}.  They developed YAGS, or Yet Another Global Scheme, which is a combination of several strong points of previously implemented schemes.  Using information from implementations such as GShare, the Agree Predictor, the Bi-Mode Predictor, the Skewed Branch Predictor, and the Filter Mechanism, the authors use some schemes to implement a predictor to store the biases of branches and other schemes to implement a predictor to store the direction of those branches.  This seemed useful to us because the two varieties of predictor catch not only the regular behavior of branches, but also the special cases instead of just allowing them to be mispredictions.
+
+In a paper by Pan, So, and Rahmeh \cite{Pan92}, we saw another attempt at improved branch prediction, this time by referencing a subhistory of branch in addition to the branch history table itself.  They claim that by adding only a shift register to the architecture, they were able to achieve an additional 11\% prediction accuracy.  This was interesting to us because it potentially showed us another way we could increase our own accuracy without a vast amount of extra hardware.
+
+\subsection{GPU Architectures}
+
+We next wanted to look at a variety of GPU architecture literature to see what is currently being done on the GPU with regards to branch prediction.  We found several SIGGRAPH course presentations which gave us a large amount of information about GPU architectures \cite{Luebke08, Sig07, Sig09}.  In the NVIDIA Research presentation \cite{Luebke08}, we learned that the GPU architecture has become less and less hardward bound as more and more parts of the GPU pipeline are allowing user programmability.  This presentation also gave us some insight as to how the GPU assigns threads to cores in groups called 'warps'.
+
+The SIGGRAPH 2009 course \cite{Sig09} showed in more detail the hardware differences between CPUs and GPUs.  It also showed us how the GPU handles the large amount of elements assigned to each core and how they currently avoid stalls due to branches.  The fact is, they don't handle stalls at all - when they encounter a branch, they just switch do a different context group and execute the same set of instructions they just completed on the previous group.  Once the GPU has finished doing this chuck of each context group, the branch from the first context group has most of the time been resolved and is ready to continue.
+
+The SIGGRAPH 2007 talk \cite{Sig07} talks more about the progression of the use of GPUs becoming more and more commonplace due to the additional programmability.  It also had a discussion about generalizing the GPU pipeline to allow for better understanding and interactions between varying GPU architectures.  This is important to us because if different GPU architects are not working under some sort of uniformity, then our work here might have vastly different outcomes down the road based on the hardware selection.
+
+\subsection{Branch Prediction on GPU}
+
+We found one paper of someone who previously attempted to do some type of branch prediction on the GPU.  He and Zhang \cite{Zhang09} attempted to use a GPU, which has a many-core architecture, to test out parallel branch prediction for future use in general purpose many-core CPUs.  Their goals were to get independent branch predictors operating on different cores to cooperate with each other in an effort to:
+
+\begin{enumerate}
+	\item increase prediction accuracy,
+	\item dynamically combine predictors to make them more powerful, or
+	\item switch them off if they are behaving the same in order to save power.
+\end{enumerate}
+
+This paper caught our attention because it involved branch prediction on the GPU, but we realized that the authors were using the GPU to test CPU-style computations, and our goals are to try and use branch prediction to improve GPU-style computations using GPU workflows.
 
 \section{Technical Sections}
 
