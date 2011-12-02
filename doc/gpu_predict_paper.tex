@@ -228,11 +228,14 @@ After deciding which benchmarks weren't going to show us anything useful (or run
 
 \section{Simulation Results}
 
+After running our implementations through our benchmark suite, we noticed a few interesting things.  First, we saw significant improvements in prediction accuracy in the per group and per core predictors when compared to the per context predictor.  The per context predictors on \emph{BFS} scored nearly an 18\% miss rate.  However, both the per group and per core predictors scored amazing 0.9\% and 0.8\% miss rates, respectively.  While not as huge of an improvement as with the \emph{BFS}, the per group and per core predictors posted very respectable improvements over the per context predictor while operating on \emph{NN} and \emph{RAY}.
+
+Second, we noticed that the per group and per core predictors performed worse than the per context predictor while operating on the \emph{NQU} benchmark.  It is possible that this occurred due to the nature of the \emph{NQU} problem, which does not exhibit the same kind of spatial locality as would be required to take advantage of either the per group or per core predictors.
+
 \begin{center}
 	\includegraphics[width=.45\textwidth]{data.png}
 	\captionof{figure}{}
 \end{center}
-
 
 \section{Conclusions}
 
