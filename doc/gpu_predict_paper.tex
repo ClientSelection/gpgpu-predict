@@ -111,6 +111,10 @@ Email: \texttt{narnold@knights.ucf.edu}}
 
 \section{Related Work}
 
+\subsection{}
+
+\section{Technical Sections}
+
 In general, CPU architecture is different than GPU architecture in a few ways.  CPU architecture includes logic for the fetch and decode phases, an ALU for execution, the execution context (registers, etc.), control logic, branch predictor, memory pre-fetcher, and the data cache.  With this setup, a general CPU is designed to perform Single Instruction, Single Data (SISD) operations well, but performs poorly on Single Instruction, Multiple Data (SIMD), Multiple Instruction, Single Data (MISD), and Multiple Instruction, Multiple Data (MIMD).  GPU architecture removes all of the logic designed to make single threaded processes run more efficiently.  There is no control logic, no branch predictor, no memory pre-fetcher, and no data cache [CITE].  With this architecture, a general GPU is designed to perform SIMD operations well, but performs poorly on SISD, MISD, and MIMD. 
 
 \begin{center}
@@ -123,9 +127,7 @@ In general, CPU architecture is different than GPU architecture in a few ways.  
 	\captionof{figure}{}
 \end{center}
 
-
-
-
+Recently, CPU designers have begun building chips with multiple cores.  This gives the CPU the ability to run SISD and MISD operations well, however there are still performance issues with SIMD and MIMD.  GPU design has been taking advantage of multiple cores per chip for years, and since the archtecture takes up less room than a traditional CPU core, a GPU is capable of fitting many cores on the chip.  This gives the GPU the ability to run SIMD and MIMD operations well.  However, due to the multiple contexts per core, and how the data elements are assigned to these cores, the GPU is not well designed to handle SISD or MISD operations well.
 
 \begin{center}
 		\includegraphics[width=.2\textwidth]{Multicore-CPU-design.jpg} 
@@ -137,9 +139,21 @@ In general, CPU architecture is different than GPU architecture in a few ways.  
 	\captionof{figure}{}
 \end{center}
 
-\subsection{}
+GPU cores have the ability to modify their context storage areas to vary the number of context elements it holds, which affects the number of context groups for the core to alternate between during computation.  These alternating context groups is how the GPU tries to hide data stalls.  When a group encounters a branch, since there is no forwarding logic, the group must wait for the data.  While this is happening, the core switches to the next group and performs the same instructions that it just executed on the previous group.  By alternating these groups in this manner, called interleaving, the GPU can hide the vast majority of data stalls or branch calculation waits.
 
-\section{Technical Sections}
+\begin{center}
+	\includegraphics[width=.45\textwidth]{GPU-context-interleaving.jpg}
+	\captionof{figure}{}
+\end{center}
+
+However, what if the stall time exceeds the amount of time it would take this particular GPU core to alternate amongst all if its context groups?  In this case the core would be required to wait until the stall is resolved.
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{GPU-context-interleaving-2.jpg}
+	\captionof{figure}{}
+\end{center}
+
+In this case, there is nothing that can be done to avoid the stall, and the core must wait.  But what if this could be avoided?  
 
 \section{Simulation Methodology}
 
