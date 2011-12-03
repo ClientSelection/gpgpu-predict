@@ -1,0 +1,1542 @@
+
+
+        *** GPGPU-Sim version 3.0.1 (build 11015) ***
+
+
+GPGPU-Sim PTX: simulation mode 0 (can change with PTX_SIM_MODE_FUNC environment variable:
+               1=functional simulation only, 0=detailed performance simulator)
+GPGPU-Sim: Configuration options:
+
+-network_mode                           1 # Interconnection network mode
+-inter_config_file   icnt_config_quadro_islip.txt # Interconnection network config file
+-gpgpu_ptx_convert_to_ptxplus                    0 # Convert embedded ptx to ptxplus
+-gpgpu_ptx_save_converted_ptxplus                    0 # Saved converted ptxplus to a file
+-gpgpu_ptx_force_max_capability                   12 # Force maximum compute capability
+-gpgpu_ptx_inst_debug_to_file                    0 # Dump executed instructions' debug information to file
+-gpgpu_ptx_inst_debug_file       inst_debug.txt # Executed instructions' debug output file
+-gpgpu_ptx_inst_debug_thread_uid                    1 # Thread UID for executed instructions' debug output
+-gpgpu_simd_model                       1 # 1 = post-dominator
+-gpgpu_shader_core_pipeline              1024:32 # shader core pipeline config, i.e., {<nthread>:<warpsize>}
+-gpgpu_tex_cache:l1  8:128:5:L:R:m,F:128:4,128:2 # per-shader L1 texture cache  (READ-ONLY) config  {<nsets>:<bsize>:<assoc>:<rep>:<wr>:<alloc>,<mshr>:<N>:<merge>,<mq>:<rf>}
+-gpgpu_const_cache:l1 64:64:2:L:R:f,A:2:32,4 # per-shader L1 constant memory cache  (READ-ONLY) config  {<nsets>:<bsize>:<assoc>:<rep>:<wr>:<alloc>,<mshr>:<N>:<merge>,<mq>}
+-gpgpu_cache:il1     4:256:4:L:R:f,A:2:32,4 # shader L1 instruction cache config  {<nsets>:<bsize>:<assoc>:<rep>:<wr>:<alloc>,<mshr>:<N>:<merge>,<mq>}
+-gpgpu_cache:dl1                     none # per-shader L1 data cache config  {<nsets>:<bsize>:<assoc>:<rep>:<wr>:<alloc>,<mshr>:<N>:<merge>,<mq>|none}
+-gpgpu_perfect_mem                      0 # enable perfect memory mode (no cache miss)
+-gpgpu_shader_registers                16384 # Number of registers per shader core. Limits number of concurrent CTAs. (default 8192)
+-gpgpu_shader_cta                       8 # Maximum number of concurrent CTAs in shader (default 8)
+-gpgpu_n_clusters                      10 # number of processing clusters
+-gpgpu_n_cores_per_cluster                    3 # number of simd cores per cluster
+-gpgpu_n_cluster_ejection_buffer_size                    8 # number of packets in ejection buffer
+-gpgpu_n_ldst_response_buffer_size                    2 # number of response packets in ld/st unit ejection buffer
+-gpgpu_shmem_size                   16384 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_warp_parts                    2 # Number of portions a warp is divided into for shared memory bank conflict check 
+-gpgpu_warpdistro_shader                   -1 # Specify which shader core to collect the warp size distribution from
+-gpgpu_local_mem_map                    1 # Mapping from local memory space address to simulated GPU physical address space (default = enabled)
+-gpgpu_num_reg_banks                    8 # Number of register banks (default = 8)
+-gpgpu_reg_bank_use_warp_id                    0 # Use warp ID in mapping registers to banks (default = off)
+-gpgpu_operand_collector_num_units_sp                    6 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_sfu                    8 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_mem                    2 # number of collector units (default = 2)
+-gpgpu_operand_collector_num_units_gen                    0 # number of collector units (default = 0)
+-gpgpu_operand_collector_num_in_ports_sp                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_sfu                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_mem                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_gen                    0 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_out_ports_sp                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_sfu                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_mem                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_gen                    0 # number of collector unit in ports (default = 0)
+-gpgpu_coalesce_arch                   13 # Coalescing arch (default = 13, anything else is off for now)
+-gpgpu_num_sched_per_core                    1 # Number of warp schedulers per core
+-gpgpu_max_insn_issue_per_warp                    2 # Max number of instructions that can be issued per warp in one cycle by scheduler
+-gpgpu_dram_scheduler                    1 # 0 = fifo, 1 = FR-FCFS (defaul)
+-gpgpu_dram_partition_queues              8:8:8:8 # i2$:$2d:d2$:$2i
+-l2_ideal                               0 # Use a ideal L2 cache that always hit
+-gpgpu_cache:dl2     64:32:8:L:R:m,A:16:4,4 # unified banked L2 data cache config  {<nsets>:<bsize>:<assoc>:<rep>:<wr>:<alloc>,<mshr>:<N>:<merge>,<mq>}
+-gpgpu_cache:dl2_texture_only                    0 # L2 cache used for texture only
+-gpgpu_n_mem                            8 # number of memory modules (e.g. memory controllers) in gpu
+-gpgpu_n_mem_per_ctrlr                    2 # number of memory chips per memory controller
+-gpgpu_memlatency_stat                   14 # track and display latency statistics 0x2 enables MC, 0x4 enables queue logs
+-gpgpu_dram_sched_queue_size                   16 # 0 = unlimited (default); # entries per chip
+-gpgpu_dram_buswidth                    4 # default = 4 bytes (8 bytes per cycle at DDR)
+-gpgpu_dram_burst_length                    4 # Burst length of each DRAM request (default = 4 DDR cycle)
+-gpgpu_dram_timing_opt 8:2:8:12:25:10:35:10:7:6:11 # DRAM timing parameters = {nbk:tCCD:tRRD:tRCD:tRAS:tRP:tRC:CL:WL:tCDLR:tWR}
+-gpgpu_mem_addr_mapping dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RRBBBCCC.CCCSSSSS # mapping memory address to dram model {dramid@<start bit>;<memory address map>}
+-gpgpu_mem_address_mask                    1 # 0 = old addressing mask, 1 = new addressing mask, 2 = new add. mask + flipped bank sel and chip sel bits
+-gpgpu_max_cycle                        0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_insn                         0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_cta                          0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_runtime_stat                   500 # display runtime statistics such as dram utilization {<freq>:<flag>}
+-gpgpu_flush_cache                      0 # Flush cache at the end of each kernel call
+-gpgpu_deadlock_detect                    1 # Stop the simulation at deadlock (1=on (default), 0=off)
+-gpgpu_ptx_instruction_classification                    0 # if enabled will classify ptx instruction types per kernel (Max 255 kernels now)
+-gpgpu_ptx_sim_mode                     0 # Select between Performance (default) or Functional simulation (1)
+-gpgpu_clock_domains 325.0:650.0:650.0:800.0 # Clock Domain Frequencies in MhZ {<Core Clock>:<ICNT Clock>:<L2 Clock>:<DRAM Clock>}
+-gpgpu_max_concurrent_kernel                    8 # maximum kernels that can run concurrently on GPU
+-gpgpu_cflog_interval                    0 # Interval between each snapshot in control flow logger
+-visualizer_enabled                     0 # Turn on visualizer output (1=On, 0=Off)
+-visualizer_outputfile                 NULL # Specifies the output log file for visualizer
+-visualizer_zlevel                      6 # Compression level of the visualizer output log (0=no comp, 9=highest)
+-enable_ptx_file_line_stats                    1 # Turn on PTX source line statistic profiling. (1 = On)
+-ptx_line_stats_filename gpgpu_inst_stats.txt # Output file for PTX source line statistics.
+-save_embedded_ptx                      0 # saves ptx files embedded in binary as <n>.ptx
+-keep                                   0 # keep intermediate files created by GPGPU-Sim when interfacing with external programs
+addr_dec_mask[CHIP]  = 0000000000000700 	high:11 low:8
+addr_dec_mask[BK]    = 000000000001c000 	high:17 low:14
+addr_dec_mask[ROW]   = 000000007ffe0000 	high:31 low:17
+addr_dec_mask[COL]   = 00000000000038ff 	high:14 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+GPGPU-Sim uArch: clock freqs: 325000000.000000:650000000.000000:650000000.000000:800000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000307692307692:0.00000000153846153846:0.00000000153846153846:0.00000000125000000000
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: interconnect nodemap
+GPGPU-Sim uArch:   0 
+GPGPU-Sim uArch:   1   2   3   4 
+GPGPU-Sim uArch:   5   6   7   8 
+GPGPU-Sim uArch:   9  10  11  12 
+GPGPU-Sim uArch:  13  14  15  16 
+GPGPU-Sim uArch:  17 GPGPU-Sim uArch: performance model initialization complete.
+GPGPU-Sim PTX: __cudaRegisterFatBinary found PTX versions for 'nqueen.cu', capability = compute_10
+GPGPU-Sim PTX: Loading PTX for nqueen.cu, capability = compute_10
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_23517_39_sum44" from 0x0 to 0x180 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_23512_39_mask428" from 0x180 to 0x1080 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_23514_39_r_mask4268" from 0x1e00 to 0x2d00 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_23513_39_l_mask8108" from 0x2d00 to 0x3c00 (shared memory space)
+GPGPU-Sim PTX: allocating shared region for "__cuda___cuda_local_var_23515_39_m11948" from 0x3c00 to 0x4b00 (shared memory space)
+GPGPU-Sim PTX: instruction assembly for function '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'...   done.
+GPGPU-Sim PTX: finding reconvergence points for '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'...
+GPGPU-Sim PTX: Finding dominators for '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'...
+GPGPU-Sim PTX: Finding immediate dominators for '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'...
+GPGPU-Sim PTX: Finding postdominators for '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'...
+GPGPU-Sim PTX: Finding immediate postdominators for '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'...
+GPGPU-Sim PTX: pre-decoding instructions for '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'... GPGPU-Sim PTX: Reconvergence Pairs for _Z24solve_nqueen_cuda_kerneliiPjS_S_S_i
+GPGPU-Sim PTX:   branch pc = 88	target pc = 816
+GPGPU-Sim PTX:   branch pc = 408	target pc = 760
+GPGPU-Sim PTX:   branch pc = 432	target pc = 760
+GPGPU-Sim PTX:   branch pc = 512	target pc = 760
+GPGPU-Sim PTX:   branch pc = 544	target pc = 760
+GPGPU-Sim PTX:   branch pc = 576	target pc = 760
+GPGPU-Sim PTX:   branch pc = 736	target pc = 760
+GPGPU-Sim PTX:   branch pc = 776	target pc = 784
+GPGPU-Sim PTX:   branch pc = 792	target pc = 816
+GPGPU-Sim PTX:   branch pc = 840	target pc = 880
+GPGPU-Sim PTX:   branch pc = 888	target pc = 928
+GPGPU-Sim PTX:   branch pc = 952	target pc = 992
+GPGPU-Sim PTX:   branch pc = 1016	target pc = 1056
+GPGPU-Sim PTX:   branch pc = 1080	target pc = 1120
+GPGPU-Sim PTX:   branch pc = 1144	target pc = 1184
+GPGPU-Sim PTX:   branch pc = 1208	target pc = 1248
+GPGPU-Sim PTX:   branch pc = 1272	target pc = 1328
+  done.
+GPGPU-Sim PTX: finished parsing EMBEDDED .ptx file _1.ptx
+GPGPU-Sim PTX: extracting embedded .ptx to temporary file "_ptx_WKt7D5"
+GPGPU-Sim PTX: generating ptxinfo using "ptxas --gpu-name=sm_20 -v _ptx2_MN0kd6 --output-file /dev/null 2> _ptx_WKt7D5info"
+GPGPU-Sim PTX: Kernel '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i' : regs=16, lmem=0, smem=15744, cmem=76
+GPGPU-Sim PTX: removing ptxinfo using "rm -f _ptx_WKt7D5 _ptx2_MN0kd6 _ptx_WKt7D5info"
+GPGPU-Sim PTX: loading globals with explicit initializers... 
+GPGPU-Sim PTX: finished loading globals (0 bytes total).
+GPGPU-Sim PTX: loading constants with explicit initializers...  done.
+GPGPU-Sim PTX: __cudaRegisterFunction _Z24solve_nqueen_cuda_kerneliiPjS_S_S_i : hostFun 0x0x406787, fat_cubin_handle = 1
+Usage: ./nqu [-c|-g] n steps
+  -c: CPU only
+  -g: GPU only
+  n: n-queen
+  steps: step for GPU
+Default to 8 queen
+CUDA initialized.
+GPGPU-Sim: synchronize waiting for inactive GPU simulation
+GPGPU-Sim API: Stream Manager State
+GPGPU-Sim: detected inactive GPU simulation thread
+CPU: 8 queen = 92  time = 0.028000 msec
+GPGPU-Sim: synchronize waiting for inactive GPU simulation
+GPGPU-Sim API: Stream Manager State
+GPGPU-Sim: detected inactive GPU simulation thread
+
+GPGPU-Sim PTX: cudaLaunch for 0x0x406787 (mode=performance simulation) on stream 0
+GPGPU-Sim PTX: pushing kernel '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i' to stream 0, gridDim= (256,1,1) blockDim = (96,1,1) 
+kernel '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i' transfer to GPU hardware scheduler
+GPGPU-Sim uArch: Shader 3 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: CTA/core = 1, limited by: shmem
+GPGPU-Sim uArch: core:  3, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(1,0)
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(2,0)
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(3,0)
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(3,0)
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(3,0)
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(3,0)
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(3,0)
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(4,0)
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(4,0)
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(4,0)
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(4,0)
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(5,0)
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(5,0)
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(5,0)
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(6,0)
+GPGPU-Sim uArch: cycles simulated: 500  inst.: 34749 (ipc=69.5) sim_rate=34749 (inst/sec) elapsed = 0:0:00:01 / Mon Nov 28 14:21:23 2011
+GPGPU-Sim PTX: 100000 instructions simulated : ctaid=(13,0,0) tid=(74,0,0)
+GPGPU-Sim uArch: cycles simulated: 1000  inst.: 129590 (ipc=129.6) sim_rate=129590 (inst/sec) elapsed = 0:0:00:01 / Mon Nov 28 14:21:23 2011
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (1218,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(1219,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (1220,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(1221,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (1225,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(1226,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (1229,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(1230,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (1234,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(1235,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (1238,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(1239,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (1244,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(1245,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (1247,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(1248,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (1252,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(1253,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (1257,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(1258,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (1261,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(1262,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (1265,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(1266,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (1270,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(1271,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (1274,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(1275,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (1279,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(1280,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (1283,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(1284,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (1288,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(1289,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (1292,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(1293,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (1298,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(1299,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (1301,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(1302,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (1306,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(1307,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (1311,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(1312,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (1315,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(1316,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (1319,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(1320,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (1324,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(1325,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (1328,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(1329,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (1333,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(1334,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (1337,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(1338,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (1342,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(1343,0)
+GPGPU-Sim PTX: 200000 instructions simulated : ctaid=(57,0,0) tid=(34,0,0)
+GPGPU-Sim uArch: cycles simulated: 1500  inst.: 215796 (ipc=143.9) sim_rate=215796 (inst/sec) elapsed = 0:0:00:01 / Mon Nov 28 14:21:23 2011
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (1771,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(1772,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (1773,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(1774,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (1777,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(1778,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (1781,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(1782,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (1786,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(1787,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (1790,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(1791,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (1797,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(1798,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (1799,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(1800,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (1804,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(1805,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (1810,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(1811,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (1813,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(1814,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (1817,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(1818,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (1823,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(1824,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (1826,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(1827,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (1831,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(1832,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (1836,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(1837,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (1840,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(1841,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (1844,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(1845,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (1851,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(1852,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (1853,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(1854,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (1858,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(1859,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (1864,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(1865,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (1867,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(1868,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (1871,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(1872,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (1877,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(1878,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (1880,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(1881,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (1885,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(1886,0)
+GPGPU-Sim PTX: 300000 instructions simulated : ctaid=(59,0,0) tid=(83,0,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (1890,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(1891,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (1894,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(1895,0)
+GPGPU-Sim uArch: cycles simulated: 2000  inst.: 333477 (ipc=166.7) sim_rate=333477 (inst/sec) elapsed = 0:0:00:01 / Mon Nov 28 14:21:23 2011
+GPGPU-Sim PTX: 400000 instructions simulated : ctaid=(84,0,0) tid=(84,0,0)
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (2323,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(2324,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (2325,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(2326,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (2330,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(2331,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (2333,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(2334,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (2338,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(2339,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (2344,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(2345,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (2349,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(2350,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (2351,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(2352,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (2356,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(2357,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (2362,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(2363,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (2365,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(2366,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (2369,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(2370,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (2375,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(2376,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (2378,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(2379,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (2384,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(2385,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (2388,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(2389,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (2392,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(2393,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (2397,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(2398,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (2403,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(2404,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (2405,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(2406,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (2410,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(2411,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (2416,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(2417,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (2419,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(2420,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (2423,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(2424,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (2429,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(2430,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (2432,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(2433,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (2437,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(2438,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (2442,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(2443,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (2447,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(2448,0)
+GPGPU-Sim uArch: cycles simulated: 2500  inst.: 447706 (ipc=179.1) sim_rate=447706 (inst/sec) elapsed = 0:0:00:01 / Mon Nov 28 14:21:23 2011
+GPGPU-Sim PTX: 500000 instructions simulated : ctaid=(109,0,0) tid=(11,0,0)
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (2875,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(2876,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (2878,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(2879,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (2882,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(2883,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (2885,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(2886,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (2891,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(2892,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (2896,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(2897,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (2901,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(2902,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (2904,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(2905,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (2908,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(2909,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (2914,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(2915,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (2917,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(2918,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (2921,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(2922,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (2927,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(2928,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (2930,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(2931,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (2936,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(2937,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (2940,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(2941,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (2945,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(2946,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (2949,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(2950,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (2956,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(2957,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (2958,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(2959,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (2962,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(2963,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (2969,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(2970,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (2971,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(2972,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (2975,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(2976,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (2982,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(2983,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (2984,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(2985,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (2989,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(2990,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (2995,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(2996,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (2999,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(3000,0)
+GPGPU-Sim uArch: cycles simulated: 3000  inst.: 562956 (ipc=187.7) sim_rate=562956 (inst/sec) elapsed = 0:0:00:01 / Mon Nov 28 14:21:23 2011
+GPGPU-Sim PTX: 600000 instructions simulated : ctaid=(136,0,0) tid=(32,0,0)
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (3427,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(3428,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (3430,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(3431,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (3434,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(3435,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (3437,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(3438,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (3443,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(3444,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (3448,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(3449,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (3453,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(3454,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (3456,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(3457,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (3460,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(3461,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (3466,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(3467,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (3469,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(3470,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (3475,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(3476,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (3479,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(3480,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (3482,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(3483,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (3489,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(3490,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (3492,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(3493,0)
+GPGPU-Sim PTX: 700000 instructions simulated : ctaid=(160,0,0) tid=(49,0,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (3497,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(3498,0)
+GPGPU-Sim uArch: cycles simulated: 3500  inst.: 684348 (ipc=195.5) sim_rate=342174 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (3502,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(3503,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (3508,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(3509,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (3510,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(3511,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (3515,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(3516,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (3521,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(3522,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (3523,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(3524,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (3528,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(3529,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (3534,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(3535,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (3536,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(3537,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (3541,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(3542,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (3547,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(3548,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (3551,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(3552,0)
+GPGPU-Sim PTX: 800000 instructions simulated : ctaid=(170,0,0) tid=(11,0,0)
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (3979,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(3980,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (3983,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(3984,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (3986,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(3987,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (3989,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(3990,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (3996,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(3997,0)
+GPGPU-Sim uArch: cycles simulated: 4000  inst.: 813494 (ipc=203.4) sim_rate=406747 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (4000,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(4001,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (4005,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(4006,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (4009,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(4010,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (4012,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(4013,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (4018,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(4019,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (4022,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(4023,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (4027,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(4028,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (4031,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(4032,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (4035,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(4036,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (4041,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(4042,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (4044,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(4045,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (4050,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(4051,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (4054,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(4055,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (4061,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(4062,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (4063,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(4064,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (4067,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(4068,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (4074,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(4075,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (4076,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(4077,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (4080,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(4081,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (4087,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(4088,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (4089,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(4090,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (4093,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(4094,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (4100,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(4101,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (4103,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(4104,0)
+GPGPU-Sim PTX: 900000 instructions simulated : ctaid=(182,0,0) tid=(52,0,0)
+GPGPU-Sim uArch: cycles simulated: 4500  inst.: 947282 (ipc=210.5) sim_rate=473641 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (4531,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(4532,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (4535,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(4536,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (4538,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(4539,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (4542,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(4543,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (4548,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(4549,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (4552,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(4553,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (4557,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(4558,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (4561,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(4562,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (4564,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(4565,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (4570,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(4571,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (4574,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(4575,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (4579,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(4580,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (4583,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(4584,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (4587,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(4588,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (4594,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(4595,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (4596,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(4597,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (4602,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(4603,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (4608,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(4609,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (4613,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(4614,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (4615,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(4616,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (4620,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(4621,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (4626,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(4627,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (4628,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(4629,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (4633,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 14 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 14, cta: 0 initialized @(4634,0)
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (4639,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 17, cta: 0 initialized @(4640,0)
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (4641,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 20, cta: 0 initialized @(4642,0)
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (4646,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 23, cta: 0 initialized @(4647,0)
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (4652,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 26, cta: 0 initialized @(4653,0)
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (4655,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 29, cta: 0 initialized @(4656,0)
+GPGPU-Sim PTX: 1000000 instructions simulated : ctaid=(211,0,0) tid=(43,0,0)
+GPGPU-Sim PTX: 1100000 instructions simulated : ctaid=(231,0,0) tid=(18,0,0)
+GPGPU-Sim uArch: cycles simulated: 5000  inst.: 1077606 (ipc=215.5) sim_rate=538803 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (5083,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 18 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 18, cta: 0 initialized @(5084,0)
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (5088,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 12, cta: 0 initialized @(5089,0)
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (5090,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  6, cta: 0 initialized @(5091,0)
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (5094,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  0, cta: 0 initialized @(5095,0)
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (5101,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 15, cta: 0 initialized @(5102,0)
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (5104,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 21, cta: 0 initialized @(5105,0)
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (5109,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  9, cta: 0 initialized @(5110,0)
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (5114,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 24, cta: 0 initialized @(5115,0)
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (5116,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 27, cta: 0 initialized @(5117,0)
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (5122,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  1, cta: 0 initialized @(5123,0)
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (5127,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  4, cta: 0 initialized @(5128,0)
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (5131,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  7, cta: 0 initialized @(5132,0)
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (5135,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 10, cta: 0 initialized @(5136,0)
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (5140,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 13, cta: 0 initialized @(5141,0)
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (5146,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 16, cta: 0 initialized @(5147,0)
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (5148,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 19, cta: 0 initialized @(5149,0)
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (5155,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 22, cta: 0 initialized @(5156,0)
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (5160,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 25, cta: 0 initialized @(5161,0)
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (5166,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 28, cta: 0 initialized @(5167,0)
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (5168,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  2, cta: 0 initialized @(5169,0)
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (5172,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  5, cta: 0 initialized @(5173,0)
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (5179,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core:  8, cta: 0 initialized @(5180,0)
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (5181,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 bind to kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i'
+GPGPU-Sim uArch: core: 11, cta: 0 initialized @(5182,0)
+GPGPU-Sim uArch: Shader 14 finished CTA #0 (5185,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 14 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 17 finished CTA #0 (5192,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 17 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 20 finished CTA #0 (5194,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 20 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 23 finished CTA #0 (5198,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 23 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 26 finished CTA #0 (5205,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 26 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 29 finished CTA #0 (5207,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 29 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim PTX: 1200000 instructions simulated : ctaid=(244,0,0) tid=(92,0,0)
+GPGPU-Sim uArch: cycles simulated: 5500  inst.: 1180607 (ipc=214.7) sim_rate=590303 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: Shader 18 finished CTA #0 (5636,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 18 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 12 finished CTA #0 (5640,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 12 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 6 finished CTA #0 (5642,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 6 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 0 finished CTA #0 (5647,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 0 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 15 finished CTA #0 (5653,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 15 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 21 finished CTA #0 (5656,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 21 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 9 finished CTA #0 (5662,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 9 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 24 finished CTA #0 (5666,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 24 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 27 finished CTA #0 (5668,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 27 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 1 finished CTA #0 (5675,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 1 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 4 finished CTA #0 (5679,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 4 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 7 finished CTA #0 (5683,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 7 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 10 finished CTA #0 (5688,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 10 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 13 finished CTA #0 (5692,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 13 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 16 finished CTA #0 (5699,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 16 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 19 finished CTA #0 (5701,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 19 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 22 finished CTA #0 (5707,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 22 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 25 finished CTA #0 (5712,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 25 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 28 finished CTA #0 (5718,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 28 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 2 finished CTA #0 (5720,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 2 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 5 finished CTA #0 (5725,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 5 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 8 finished CTA #0 (5731,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 8 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: Shader 11 finished CTA #0 (5733,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 11 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: cycles simulated: 6000  inst.: 1191172 (ipc=198.5) sim_rate=595586 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 6500  inst.: 1192278 (ipc=183.4) sim_rate=596139 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 7000  inst.: 1193684 (ipc=170.5) sim_rate=596842 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 7500  inst.: 1194888 (ipc=159.3) sim_rate=597444 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 8000  inst.: 1196138 (ipc=149.5) sim_rate=598069 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 8500  inst.: 1197641 (ipc=140.9) sim_rate=598820 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 9000  inst.: 1198804 (ipc=133.2) sim_rate=599402 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 9500  inst.: 1200007 (ipc=126.3) sim_rate=600003 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 10000  inst.: 1201260 (ipc=120.1) sim_rate=600630 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 10500  inst.: 1202621 (ipc=114.5) sim_rate=601310 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 11000  inst.: 1203867 (ipc=109.4) sim_rate=601933 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 11500  inst.: 1205117 (ipc=104.8) sim_rate=602558 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 12000  inst.: 1206451 (ipc=100.5) sim_rate=603225 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 12500  inst.: 1207821 (ipc=96.6) sim_rate=603910 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 13000  inst.: 1209126 (ipc=93.0) sim_rate=604563 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 13500  inst.: 1210357 (ipc=89.7) sim_rate=605178 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 14000  inst.: 1211443 (ipc=86.5) sim_rate=605721 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 14500  inst.: 1212779 (ipc=83.6) sim_rate=606389 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 15000  inst.: 1214064 (ipc=80.9) sim_rate=607032 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 15500  inst.: 1215356 (ipc=78.4) sim_rate=607678 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 16000  inst.: 1216561 (ipc=76.0) sim_rate=608280 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 16500  inst.: 1217777 (ipc=73.8) sim_rate=608888 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 17000  inst.: 1218682 (ipc=71.7) sim_rate=609341 (inst/sec) elapsed = 0:0:00:02 / Mon Nov 28 14:21:24 2011
+GPGPU-Sim uArch: cycles simulated: 17500  inst.: 1219578 (ipc=69.7) sim_rate=406526 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 18000  inst.: 1220584 (ipc=67.8) sim_rate=406861 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 18500  inst.: 1221597 (ipc=66.0) sim_rate=407199 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 19000  inst.: 1222428 (ipc=64.3) sim_rate=407476 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 19500  inst.: 1223212 (ipc=62.7) sim_rate=407737 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 20000  inst.: 1224102 (ipc=61.2) sim_rate=408034 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 20500  inst.: 1224868 (ipc=59.7) sim_rate=408289 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 21000  inst.: 1225607 (ipc=58.4) sim_rate=408535 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 21500  inst.: 1226114 (ipc=57.0) sim_rate=408704 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 22000  inst.: 1226739 (ipc=55.8) sim_rate=408913 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 22500  inst.: 1227432 (ipc=54.6) sim_rate=409144 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 23000  inst.: 1227964 (ipc=53.4) sim_rate=409321 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 23500  inst.: 1228524 (ipc=52.3) sim_rate=409508 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 24000  inst.: 1229004 (ipc=51.2) sim_rate=409668 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 24500  inst.: 1229361 (ipc=50.2) sim_rate=409787 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 25000  inst.: 1229780 (ipc=49.2) sim_rate=409926 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 25500  inst.: 1230115 (ipc=48.2) sim_rate=410038 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 26000  inst.: 1230320 (ipc=47.3) sim_rate=410106 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 26500  inst.: 1230555 (ipc=46.4) sim_rate=410185 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 27000  inst.: 1230753 (ipc=45.6) sim_rate=410251 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 27500  inst.: 1230915 (ipc=44.8) sim_rate=410305 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 28000  inst.: 1231129 (ipc=44.0) sim_rate=410376 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: cycles simulated: 28500  inst.: 1234307 (ipc=43.3) sim_rate=411435 (inst/sec) elapsed = 0:0:00:03 / Mon Nov 28 14:21:25 2011
+GPGPU-Sim uArch: Shader 3 finished CTA #0 (28649,0), 0 CTAs running
+GPGPU-Sim uArch: Shader 3 empty (release kernel 1 '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i').
+GPGPU-Sim uArch: GPU detected kernel '_Z24solve_nqueen_cuda_kerneliiPjS_S_S_i' finished on shader 3.
+gpu_sim_cycle = 28650
+gpu_sim_insn = 1234342
+gpu_ipc =      43.0835
+gpu_tot_sim_cycle = 28650
+gpu_tot_sim_insn = 1234342
+gpu_tot_ipc =      43.0835
+gpu_tot_issued_cta = 0
+gpu_stall_dramfull = 137
+gpu_stall_icnt2sh    = 912
+total_dl1_misses=0
+total_dl1_accesses=0
+total_dl1_miss_rate= -nan
+gpgpu_n_tot_icount = 48995
+gpgpu_n_stall_shd_mem = 4728
+gpgpu_n_mem_read_local = 0
+gpgpu_n_mem_write_local = 0
+gpgpu_n_mem_read_global = 6
+gpgpu_n_mem_write_global = 256
+gpgpu_n_mem_texture = 0
+gpgpu_n_mem_const = 30
+gpgpu_n_load_insn  = 6
+gpgpu_n_store_insn = 256
+gpgpu_n_shmem_insn = 0
+gpgpu_n_tex_insn = 0
+gpgpu_n_const_mem_insn = 0
+gpgpu_n_param_mem_insn = 30
+gpgpu_n_shmem_bkconflict = 0
+gpgpu_n_cache_bkconflict = 0
+gpgpu_n_intrawarp_mshr_merge = 0
+gpgpu_n_cmem_portconflict = 0
+gpgpu_stall_shd_mem[c_mem][bk_conf] = 0
+gpgpu_stall_shd_mem[c_mem][mshr_rc] = 0
+gpgpu_stall_shd_mem[c_mem][icnt_rc] = 0
+gpgpu_stall_shd_mem[t_mem][mshr_rc] = 0
+gpgpu_stall_shd_mem[t_mem][icnt_rc] = 0
+gpgpu_stall_shd_mem[s_mem][bk_conf] = 4725
+gpgpu_stall_shd_mem[gl_mem][bk_conf] = 0
+gpgpu_stall_shd_mem[gl_mem][coal_stall] = 3
+gpgpu_stall_shd_mem[g_mem_ld][mshr_rc] = 0
+gpgpu_stall_shd_mem[g_mem_ld][icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_ld][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_ld][wb_rsrv_fail] = 0
+gpgpu_stall_shd_mem[g_mem_st][mshr_rc] = 0
+gpgpu_stall_shd_mem[g_mem_st][icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_st][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[g_mem_st][wb_rsrv_fail] = 0
+gpgpu_stall_shd_mem[l_mem_ld][mshr_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_rsrv_fail] = 0
+gpgpu_stall_shd_mem[l_mem_st][mshr_rc] = 0
+gpgpu_stall_shd_mem[l_mem_st][icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_icnt_rc] = 0
+gpgpu_stall_shd_mem[l_mem_ld][wb_rsrv_fail] = 0
+gpu_reg_bank_conflict_stalls = 0
+--BP Statistics--
+core level: mispredictions: 7254 predictions 229016 miss-rate 0.031675
+warp level: mispredictions: 6350 predictions 229016 miss-rate 0.027727
+thread level: mispredictions: 4014 predictions 229016 miss-rate 0.017527
+ENDBP
+Warp Occupancy Distribution:
+Stall:0	W0_Idle:111007	W0_Scoreboard:83758	W1:2921	W2:1384	W3:185	W4:1300	W5:373	W6:240	W7:370	W8:1395	W9:419	W10:467	W11:298	W12:461	W13:395	W14:148	W15:71	W16:1115	W17:20	W18:0	W19:0	W20:20	W21:807	W22:0	W23:0	W24:0	W25:0	W26:0	W27:0	W28:0	W29:0	W30:0	W31:0	W32:36606
+maxmrqlatency = 5 
+maxdqlatency = 0 
+maxmflatency = 134 
+averagemflatency = 123 
+max_icnt2mem_latency = 14 
+max_icnt2sh_latency = 28649 
+mrq_lat_table:267 	0 	2 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+dq_lat_table:0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+mf_lat_table:0 	0 	0 	0 	0 	0 	285 	7 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+icnt2mem_lat_table:127 	264 	8 	15 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+icnt2sh_lat_table:1 	32 	3 	0 	0 	0 	0 	0 	0 	0 	58 	114 	83 	0 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+mf_lat_pw_table:0 	0 	0 	0 	0 	0 	12 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	
+maximum concurrent accesses to same row:
+dram[0]:         1         0         0         0 
+dram[1]:         0         0         0         0 
+dram[2]:         0         0         0         0 
+dram[3]:         0         0         0         0 
+dram[4]:         0         0         0         0 
+dram[5]:         0         0         0         0 
+dram[6]:         0         0         0         0 
+dram[7]:         0         0         0         0 
+maximum service time to same row:
+dram[0]:       211         0      1212         0 
+dram[1]:       804         0      2337         0 
+dram[2]:      1081         0      3468         0 
+dram[3]:       477         0      4601         0 
+dram[4]:       742         0         0         0 
+dram[5]:      1032         0         0         0 
+dram[6]:         0         0         0         0 
+dram[7]:         0         0         0         0 
+average row accesses per activate:
+dram[0]:  2.000000      -nan 64.000000      -nan 
+dram[1]:  1.000000      -nan 64.000000      -nan 
+dram[2]:  1.000000      -nan 64.000000      -nan 
+dram[3]:  1.000000      -nan 64.000000      -nan 
+dram[4]:  1.000000      -nan      -nan      -nan 
+dram[5]:  1.000000      -nan      -nan      -nan 
+dram[6]:      -nan      -nan      -nan      -nan 
+dram[7]:      -nan      -nan      -nan      -nan 
+average row locality = 265/11 = 24.090910
+number of total memory accesses made:
+dram[0]:         0         0         0         0 
+dram[1]:         0         0         0         0 
+dram[2]:         0         0         0         0 
+dram[3]:         0         0         0         0 
+dram[4]:         0         0         0         0 
+dram[5]:         0         0         0         0 
+dram[6]:         0         0         0         0 
+dram[7]:         0         0         0         0 
+total accesses: 0
+min_bank_accesses = 0!
+min_chip_accesses = 0!
+number of total read accesses:
+dram[0]:         4         0         0         0 
+dram[1]:         1         0         0         0 
+dram[2]:         1         0         0         0 
+dram[3]:         1         0         0         0 
+dram[4]:         1         0         0         0 
+dram[5]:         1         0         0         0 
+dram[6]:         0         0         0         0 
+dram[7]:         0         0         0         0 
+total reads: 9
+min_bank_accesses = 0!
+min_chip_accesses = 0!
+number of total write accesses:
+dram[0]:         0         0        64         0 
+dram[1]:         0         0        64         0 
+dram[2]:         0         0        64         0 
+dram[3]:         0         0        64         0 
+dram[4]:         0         0         0         0 
+dram[5]:         0         0         0         0 
+dram[6]:         0         0         0         0 
+dram[7]:         0         0         0         0 
+total reads: 256
+min_bank_accesses = 0!
+min_chip_accesses = 0!
+average mf latency per bank:
+dram[0]:        966    none         123    none  
+dram[1]:          0    none         123    none  
+dram[2]:          0    none         123    none  
+dram[3]:          0    none         123    none  
+dram[4]:          0    none      none      none  
+dram[5]:          0    none      none      none  
+dram[6]:     none      none      none      none  
+dram[7]:     none      none      none      none  
+maximum mf latency per bank:
+dram[0]:        134         0       125         0
+dram[1]:          0         0       125         0
+dram[2]:          0         0       125         0
+dram[3]:          0         0       125         0
+dram[4]:          0         0         0         0
+dram[5]:          0         0         0         0
+dram[6]:          0         0         0         0
+dram[7]:          0         0         0         0
+L2_write_miss = 0
+L2_write_hit = 0
+L2_read_miss = 0
+L2_read_hit = 0
+Cache L2_bank_000:
+MSHR contents
+
+DRAM[0]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70443 n_act=5 n_pre=1 n_req=72 n_rd=8 n_write=64 bw_util=0.002042
+n_activity=871 dram_eff=0.1653
+bk0: 4a 70513i bk1: 0a 70513i bk2: 0a 70512i bk3: 0a 70511i bk4: 2a 70513i bk5: 0a 70512i bk6: 2a 70507i bk7: 0a 70447i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=1 avg=0.000297784
+Cache L2_bank_001:
+MSHR contents
+
+DRAM[1]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70454 n_act=2 n_pre=0 n_req=65 n_rd=1 n_write=64 bw_util=0.001843
+n_activity=743 dram_eff=0.175
+bk0: 1a 70512i bk1: 0a 70513i bk2: 0a 70513i bk3: 0a 70513i bk4: 0a 70513i bk5: 0a 70513i bk6: 0a 70513i bk7: 0a 70496i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_002:
+MSHR contents
+
+DRAM[2]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70454 n_act=2 n_pre=0 n_req=65 n_rd=1 n_write=64 bw_util=0.001843
+n_activity=742 dram_eff=0.1752
+bk0: 1a 70512i bk1: 0a 70513i bk2: 0a 70513i bk3: 0a 70513i bk4: 0a 70513i bk5: 0a 70513i bk6: 0a 70513i bk7: 0a 70496i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_003:
+MSHR contents
+
+DRAM[3]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70454 n_act=2 n_pre=0 n_req=65 n_rd=1 n_write=64 bw_util=0.001843
+n_activity=732 dram_eff=0.1776
+bk0: 1a 70512i bk1: 0a 70513i bk2: 0a 70513i bk3: 0a 70513i bk4: 0a 70513i bk5: 0a 70513i bk6: 0a 70513i bk7: 0a 70496i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_004:
+MSHR contents
+
+DRAM[4]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70519 n_act=1 n_pre=0 n_req=1 n_rd=1 n_write=0 bw_util=2.836e-05
+n_activity=35 dram_eff=0.05714
+bk0: 1a 70521i bk1: 0a 70521i bk2: 0a 70521i bk3: 0a 70521i bk4: 0a 70521i bk5: 0a 70521i bk6: 0a 70521i bk7: 0a 70508i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_005:
+MSHR contents
+
+DRAM[5]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70519 n_act=1 n_pre=0 n_req=1 n_rd=1 n_write=0 bw_util=2.836e-05
+n_activity=35 dram_eff=0.05714
+bk0: 1a 70521i bk1: 0a 70521i bk2: 0a 70521i bk3: 0a 70521i bk4: 0a 70521i bk5: 0a 70521i bk6: 0a 70521i bk7: 0a 70508i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_006:
+MSHR contents
+
+DRAM[6]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70521 n_act=0 n_pre=0 n_req=0 n_rd=0 n_write=0 bw_util=0
+n_activity=0 dram_eff=-nan
+bk0: 0a 70521i bk1: 0a 70521i bk2: 0a 70521i bk3: 0a 70521i bk4: 0a 70521i bk5: 0a 70521i bk6: 0a 70521i bk7: 0a 70521i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_007:
+MSHR contents
+
+DRAM[7]: 8 bks, busW=4 BL=4 CL=10, tRRD=2 tCCD=8, tRCD=12 tRAS=25 tRP=10 tRC=35
+n_cmd=70521 n_nop=70521 n_act=0 n_pre=0 n_req=0 n_rd=0 n_write=0 bw_util=0
+n_activity=0 dram_eff=-nan
+bk0: 0a 70521i bk1: 0a 70521i bk2: 0a 70521i bk3: 0a 70521i bk4: 0a 70521i bk5: 0a 70521i bk6: 0a 70521i bk7: 0a 70521i 
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=0
+Cache L2_bank_000:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 66, Miss = 8 (0.121), -MgHts = 2 (0.0303)
+Cache L2_bank_001:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 1, Miss = 1 (1), -MgHts = 1 (1)
+Cache L2_bank_002:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 1, Miss = 1 (1), -MgHts = 1 (1)
+Cache L2_bank_003:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 30, Miss = 1 (0.0333), -MgHts = -2 (1.43e+08)
+Cache L2_bank_004:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 30, Miss = 1 (0.0333), -MgHts = -1 (1.43e+08)
+Cache L2_bank_005:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 30, Miss = 1 (0.0333), -MgHts = -1 (1.43e+08)
+Cache L2_bank_006:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 0, Miss = 0 (-nan), -MgHts = 0 (-nan)
+Cache L2_bank_007:	Size = 16384 B (64 Set x 8-way x 32 byte line)
+		Access = 0, Miss = 0 (-nan), -MgHts = 0 (-nan)
+L2 Cache Total Miss Rate = 0.082
+LD_mem_lat_dist  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ST_mem_lat_dist  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+Traffic 0 Stat
+%=================================
+% Average latency = 2.45411
+% Accepted packets = 0 at node 0 (avg = 0.000649625)
+lat(1) = 2.45411;
+thru(1,:) = [ 0 0 0 0 0 0 0 0 0 0 0.00338581 0.00225139 0.00225139 0.00275751 0.000523578 0.000523578 0 0 ];
+% latency change    = 1
+% throughput change = 1
+Traffic 1 Stat
+%=================================
+% Average latency = 3.57729
+% Accepted packets = 0 at node 10 (avg = 0.00141463)
+lat(2) = 3.57729;
+thru(2,:) = [ 0.00251318 0.00294949 0.00251318 0.00251318 0.00249572 0.00249572 0.00249572 0.00249572 0.00249572 0.00249572 0 0 0 0 0 0 0 0 ];
+% latency change    = 0.313977
+% throughput change = 0.540781
+----------------------------Interconnect-DETAILS---------------------------------=======Traffic[0]class0 ======
+Traffic[0]class0Overall average latency = 2.45411 (1 samples)
+Traffic[0]class0Overall average accepted rate = 0.000649625 (1 samples)
+Traffic[0]class0Overall min accepted rate = 0 (1 samples)
+traffic_manager/latency_stat_0_freq = [ 0 127 260 2 2 0 2 2 0 1 1 1 1 1 2 1 1 2 1 1 1 0 0 0 2 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ];
+Traffic[0]class1Average hops = 1 (414 samples)
+traffic_manager/hop_stats_freq = [ 0 414 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ];
+=======Traffic[1]class0 ======
+Traffic[1]class0Overall average latency = 3.57729 (1 samples)
+Traffic[1]class0Overall average accepted rate = 0.00141463 (1 samples)
+Traffic[1]class0Overall min accepted rate = 0 (1 samples)
+traffic_manager/latency_stat_0_freq = [ 0 256 2 27 3 1 0 1 0 124 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ];
+Traffic[1]class1Average hops = 1 (414 samples)
+traffic_manager/hop_stats_freq = [ 0 414 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ];
+----------------------------END-of-Interconnect-DETAILS-------------------------GPU: 8 queen = 92  time = 2308.330078 msec

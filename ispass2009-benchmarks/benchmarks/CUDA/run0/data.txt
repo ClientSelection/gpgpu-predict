@@ -1,0 +1,19 @@
+bfs
+core level: mispredictions: 34 predictions 131089 miss-rate 0.000259
+warp level: mispredictions: 104 predictions 131089 miss-rate 0.000793
+thread level: mispredictions: 23044 predictions 131089 miss-rate 0.175789
+
+nqu
+core level: mispredictions: 7254 predictions 229016 miss-rate 0.031675
+warp level: mispredictions: 6350 predictions 229016 miss-rate 0.027727
+thread level: mispredictions: 4014 predictions 229016 miss-rate 0.017527
+
+nn
+core level: mispredictions: 4726 predictions 400702 miss-rate 0.011794
+warp level: mispredictions: 4726 predictions 400702 miss-rate 0.011794
+thread level: mispredictions: 20452 predictions 400702 miss-rate 0.051040
+
+ray
+core level: mispredictions: 248308 predictions 39334986 miss-rate 0.006313
+warp level: mispredictions: 244516 predictions 39334986 miss-rate 0.006216
+thread level: mispredictions: 5808681 predictions 39334986 miss-rate 0.147672
