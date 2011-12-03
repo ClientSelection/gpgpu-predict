@@ -12,6 +12,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{array}
+\usepackage{listings}
 \usepackage{enumerate}
 
 % *** CITATION PACKAGES ***
@@ -105,7 +106,7 @@ Branch Prediction has long been used as a method of reducing the latency incurre
 do not implement branch prediction hardware in order to reduce the complexity of each of the GPU cores.  Although the SIMT model provides some 
 opportunities for control hazard penalty reduction in the form of context switching, there are several cases where the penalty is incurred regardless.
 We experimented with the application of a branch predictor to a SIMT architecture in order to reduce those hazards.  Furthermore, our model is 
-capable of sharing information about symmetric runs from multiple concurrent contexts.  By using a shared Smith\_2 branch predictor with a large branch history table,
+capable of sharing information about symmetric runs from multiple concurrent contexts.  By using a shared Smith\_2 branch predictor \cite{smith} with a large branch history table,
 we can demonstrate significantly increased prediction accuracy over a traditional single-context scheme.
 
 \end{abstract}
@@ -133,7 +134,7 @@ is not working alone, but in teams, called context groups or 'warps', and each o
 is limited to predicting based on knowledge gained from the past, SIMT branch prediction schemes are able to gain information about the present and near-future, by sharing information
 about execution with its peer contexts and context-groups.
 
-We demonstrate an implementation of this scheme using a Smith\_2 predictor described in \ref{predictor_table}.  Our implementation runs in simulation \cite{ispass09},
+We demonstrate an implementation of this scheme using a Smith\_2 predictor \cite{smith} described in \ref{predictor_table}.  Our implementation runs in simulation \cite{ispass09},
 and demonstrates the impact of sharing no information (traditional MIMD model), sharing information per context group, and sharing information per core.
 
 Our experiment demonstrates that utilizing peer information in the SIMT model provides a significantly improved prediction accuracy rate over the MIMD model
@@ -220,27 +221,35 @@ On a CPU, each core only has one execution context and one branch prediction tab
 \section{Contribution}
 
 \subsection{SIMT Branch Predictor Functional Unit}
-In addition, the size of the branch history table will be exactly the size of the maximum instruction stream length, which is 16,384 instructions.  We chose this size so that there would be absolutely no predictor collisions, and each instruction location will have its own dedicated predictor.  The predictors we will be using are Smith 2-bit predictors.
+
+Our branch predictor is based on the 2-bit Smith predictor \cite{smith}.  This predictor works with a branch history table, indexed by the PC, where each 
+entry in the table stores a 2-bit branch history register.  As seen in the figure below, the branch history register is a saturating counter that represents a state machine.  
+The highest order bit of the register determines the prediction to be made, and after a branch is taken or not taken, the result of the branch 
+changes the state according to the state diagram shown.
 
 \begin{center}
 	\includegraphics[width=.45\textwidth]{bht.png}
 	\captionof{figure}{Smith 2-bit predictor.}
 \end{center}
 
-We will compare prediction accuracies across these three implementations.  Our goal is that after the initial training of the predictors, the GPU cores will process their contexts groups as shown in the figure below:
+Typically, the branch history table is indexed by the low-order bits of the PC.  This is done so that each branch in the program can have a unique register associated with it.  However, on MIMD architectures the length of the program is not limited in any particular way,
+so the size of the branch history table is necessarily less then the total number of instructions in the program.  This implies that there may be collisions in the program, if the table is too small to include the whole program, where more than 
+one branch maps to the same spot the branch history table.  In contrast, on SIMT architectures there is a hard limit on the maximum instruction length that may be executed by a core, and so
+we may guarantee no collisions in our branch history table by taking advantage of that limit.  In our implementation, the size of the branch history table will be exactly the size of the maximum instruction stream length, which is 16,384 instructions.  We chose this size so that there would be absolutely no predictor collisions, and each instruction location will have its own dedicated predictor.  The total memory used up by this design for our predictor design is 2 bits per entry at 16k entries, for a total size of 4k.
 
-\begin{center}
-	\includegraphics[width=.45\textwidth]{GPU-predict-context.jpg}
-	\captionof{figure}{Context interleaving is not necessary, as the groups are properly predicting where to branch and continue operation.}
-\end{center}
+\subsection{SIMT Functional Unit Sharing}
+\label{intuition}
 
-We propose to implement 3 GPU Branch Prediction schemes with the following features:
+We propose to implement 3 GPU Branch Prediction schemes with the following features.  In order to communicate information from neighboring 
+execution contexts, we share a single branch predictor between the contexts in their context group, and also between all the context groups.  Because
+all contexts concurrently modify the predictor, information from one context about the branches that occured may propogate sideways in time to peer threads.
+
+Our simulated hardware designs are as follows.
 \begin{itemize}
 	\item One predictor is shared amongst the contexts within a GPU core
 	\item One predictor is shared only amongst its context group (1 per group)
-	\item One predictor is shared only amongst its context (1 per context)
+	\item One predictor is shared only amongst its context (1 per context), as in a multicore CPU, for experimental control
 \end{itemize}
-
 
 \begin{center}
 	\includegraphics[width=.2\textwidth]{Our-GPU---per-core-predictor.jpg}
@@ -257,10 +266,39 @@ We propose to implement 3 GPU Branch Prediction schemes with the following featu
 	\captionof{figure}{One BHT for each individual context. This implementation most closely resembles how a general CPU would handle branch prediction.}
 \end{center}
 
+The intuition for our approach is as follows.  The SIMT programming paradigm involves the preparation of a single ``kernel'' which is a short
+snippet of executable code to be compiled and run in parallel on each of the threads,warps, and possibly cores.  Each instance of this kernel
+running on a thread of execution is distinguished from the others by a unique identifying thread id.  Below is an example matrix-vector multiply
+kernel with a single branch point.
 
-\section{Simulation Methodology}
+\begin{lstlisting}[language=C,basicstyle=\footnotesize,frame=single,tabsize=4,title=GemV.cl]
+__kernel gemv(double * y, double * A, double * x)
+{
+    int rowout = cl_thread_id(0);  // index
+    y[rowout] = 0.0;
+    for(int i = 0; i < A.cols; i++)
+        y[rowout] += A[rowout,i] * x[i];
+}
+\end{lstlisting}
 
-In order to properly model our proposal, we must have an appropriate simulator modeling SIMD/SIMT architecture.  The SimpleScalar simulator was not sufficient, as it simulates CPU behaviors (including all of the behaviors that are removed from GPUs).  Due to our truncated timetable, we couldn't properly modify SimpleScalar, so we needed to find a GPU-specific simulator.  We found GPGPU-Sim, which is a rewrite based on the SimpleScalar simulator.  This simulator simulates an NVIDIA Quadro 5800 graphics card, with the following statistics:
+If this kernel was run with a traditional MIMD approach (e.g., one independent branch predictor FU per context of execution), then it is almost
+impossible for that branch predictor to correctly predict branch during the final iteration of the inner for loop, as all previous executions of the loop
+have been taken, it is rational for the branch predictor to predict not taken.
+
+However, if this kernel was run with one of our SIMT branch predictors, then it IS possible for many of the threads of execution to correctly predict the final iteration
+of the for loop as ``not-taken'', because when only a few of its peers mispredict, they update the shared predictor with what happens.  Due to the instruction parallel nature of the 
+SIMT paradigm, if a peer mispredicts then it is likely that you will as well, allowing you to pre-emptively fix your prediction.
+
+We will compare prediction accuracies across these three implementations.  Our goal is that after the initial training of the predictors, the GPU cores will process their contexts groups as shown in the figure below:
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{GPU-predict-context.jpg}
+	\captionof{figure}{Context interleaving is not necessary, as the groups are properly predicting where to branch and continue operation.}
+\end{center}
+
+\section{Experimental Methodology}
+
+In order to properly model our proposal, we must have an appropriate simulator modeling SIMD/SIMT architecture.  The SimpleScalar simulator was not sufficient, as it simulates CPU behaviors (including all of the behaviors that are removed from GPUs).  SimpleScalar is not sufficient, so we needed to find a GPU-specific simulator.  We found GPGPU-Sim, which is a rewrite based on the SimpleScalar simulator.  This simulator simulates an NVIDIA Quadro 5800 graphics card, with the following statistics:
 
 \begin{itemize}
 	\item 16k register file
@@ -281,9 +319,9 @@ This simulator creates libcuda.so and libOpenCL.so files on the fly to intercept
 	\captionof{figure}{GPGPU-Sim Shader core.}
 \end{center}
 
-Since we are simulating GPU hardware, it is important to run our simulator on GPU-specific benchmarks as gcc, gzip, and other common benchmarks are designed to benchmark CPU hardware changes.  We settled on using a subset of ISPASS09 CUDA benchmarks.  We used a subset of these benchmarks because some of them were failing right out of the box.  One benchmark ran continuously for 4 days before we decided to kill it and not use it.  Other benchmarks said the CPU component was failing to meet its dependencies or that the CUDA architecture was unsupported (double precision vs. single precision computations).  Yet another benchmark was written so well that it had no branching instructions during execution at all.
+Since we are simulating GPU hardware, it is important to run our simulator on GPU-specific benchmarks as gcc, gzip, and other common benchmarks are designed to benchmark CPU hardware changes.  We settled on using a subset of ISPASS09 CUDA benchmarks \cite{ispass09}.  We used a subset of these benchmarks, due to problems with the CPU component or problems with the revision of the CUDA architecture supported by our simulator. (double precision vs. single precision computations).  The AES benchmark was unsuitable because none of the instructions were branches.
 
-After deciding which benchmarks weren't going to show us anything useful (or run in a nominal amount of time for our deadlines), we settled on a suite of four benchmarks:
+We settled on a suite of four benchmarks:
 
 \begin{itemize}
 	\item \emph{NQU} - Solving the NQUEENS problem
@@ -294,18 +332,20 @@ After deciding which benchmarks weren't going to show us anything useful (or run
 
 \section{Simulation Results}
 
-After running our implementations through our benchmark suite, we noticed a few interesting things.  First, we saw significant improvements in prediction accuracy in the per group and per core predictors when compared to the per context predictor.  The per context predictors on \emph{BFS} scored nearly an 18\% miss rate.  However, both the per group and per core predictors scored amazing 0.9\% and 0.8\% miss rates, respectively.  While not as huge of an improvement as with the \emph{BFS}, the per group and per core predictors posted very respectable improvements over the per context predictor while operating on \emph{NN} and \emph{RAY}.
-
-Second, we noticed that the per group and per core predictors performed worse than the per context predictor while operating on the \emph{NQU} benchmark.  It is possible that this occurred due to the nature of the \emph{NQU} problem, which does not exhibit the same kind of spatial locality as would be required to take advantage of either the per group or per core predictors.
+We ran our simulations on all three branch prediction architectures: Shared Branch Predictor per Core, Shared BP per Context Group, Shared BP per Context (MIMD), and got the following results.
 
 \begin{center}
 	\includegraphics[width=.45\textwidth]{data.png}
 	\captionof{figure}{}
 \end{center}
 
-\section{Conclusions}
+There was significant improvements in prediction accuracy in the per group and per core predictors when compared to the per context predictor.  The per context predictors on \emph{BFS} scored nearly an 18\% miss rate.  However, both the per group and per core predictors scored amazing 0.9\% and 0.8\% miss rates, respectively.  While not as huge of an improvement as with the \emph{BFS}, the per group and per core predictors posted very respectable improvements over the per context predictor while operating on \emph{NN} and \emph{RAY}.
 
-\section{References}
+Second, we noticed that the per group and per core predictors performed worse than the per context predictor while operating on the \emph{NQU} benchmark.  It is possible that this occurred due to the nature of the \emph{NQU} problem, which does not exhibit the same kind of spatial locality as would be required to take advantage of either the per group or per core predictors.
+
+\section{Conclusion}
+
+\section{Future Work}
 
 \bibliographystyle{IEEEtran}
 \bibliography{gpu_predict_paper}
