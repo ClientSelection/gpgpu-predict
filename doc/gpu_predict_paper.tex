@@ -298,6 +298,14 @@ We will compare prediction accuracies across these three implementations.  Our g
 
 \section{Experimental Methodology}
 
+\begin{figure*}[t]
+	\begin{center}
+	\includegraphics[width=.8\textwidth]{data2.png}
+	\end{center}
+	\caption{Simulation Results}
+	\label{results}
+\end{figure*}
+
 In order to properly model our proposal, we must have an appropriate simulator modeling SIMD/SIMT architecture.  The SimpleScalar simulator was not sufficient, as it simulates CPU behaviors (including all of the behaviors that are removed from GPUs).  SimpleScalar is not sufficient, so we needed to find a GPU-specific simulator.  We found GPGPU-Sim, which is a rewrite based on the SimpleScalar simulator.  This simulator simulates an NVIDIA Quadro 5800 graphics card, with the following statistics:
 
 \begin{itemize}
@@ -332,20 +340,29 @@ We settled on a suite of four benchmarks:
 
 \section{Simulation Results}
 
-We ran our simulations on all three branch prediction architectures: Shared Branch Predictor per Core, Shared BP per Context Group, Shared BP per Context (MIMD), and got the following results.
+We ran our simulations on all three branch prediction architectures: Shared Branch Predictor per Core, Shared BP per Context Group, Shared BP per Context (MIMD), and got the results shown in Figure \ref{results}.
 
-\begin{center}
-	\includegraphics[width=.45\textwidth]{data.png}
-	\captionof{figure}{}
-\end{center}
+There were significant improvements in prediction accuracy in the per group and per core predictors when compared to the per context predictor.  The per context predictors on \emph{BFS} scored nearly an 18\% miss rate.  However, both the per group and per core predictors scored amazing 0.9\% and 0.8\% miss rates, respectively.  While not as huge of an improvement as with the \emph{BFS}, the per group and per core predictors posted very respectable improvements over the per context predictor while operating on \emph{NN} and \emph{RAY}.
 
-There was significant improvements in prediction accuracy in the per group and per core predictors when compared to the per context predictor.  The per context predictors on \emph{BFS} scored nearly an 18\% miss rate.  However, both the per group and per core predictors scored amazing 0.9\% and 0.8\% miss rates, respectively.  While not as huge of an improvement as with the \emph{BFS}, the per group and per core predictors posted very respectable improvements over the per context predictor while operating on \emph{NN} and \emph{RAY}.
-
-Second, we noticed that the per group and per core predictors performed worse than the per context predictor while operating on the \emph{NQU} benchmark.  It is possible that this occurred due to the nature of the \emph{NQU} problem, which does not exhibit the same kind of spatial locality as would be required to take advantage of either the per group or per core predictors.
+Second, we noticed that the per group and per core predictors performed worse than the per context predictor while operating on the \emph{NQU} benchmark.  It is possible that this occurred due to the nature of the \emph{NQU} problem, which does not exhibit the same kind of spatio-temporal locality as would be required to take advantage of either the per group or per core predictor information sharing.
 
 \section{Conclusion}
+We have demonstrated that the data-parallel nature of the SIMT model can be successfully used to dramatically increase prediction accuracy by sharing prediction structures accross multiple gpus.  We have shown, through experiment, that even
+a simple branch predictor such as a Smith bimodal predictor benefits greatly from information given to it by peer contexts sharing dynamic branch information.  We have shown several possible configurations of this branch predictor and demonstrated the performance gains.
 
-\section{Future Work}
+\subsection{Future Work}
+
+There are several important areas of future research.
+
+\begin{enumerate}
+ \item Multiple predictors can be studied that may perform better than a simple bimodal predictor for this circumstance of peer sharing.
+\item The exact impact of stall improvement latency was not studied by our approach, as our simulator did not have the appropriate timing model to model it.  Determining the 
+benefit of adding predictors in terms of real CPI performance is crucial to the importance of this class of techniques.
+\item Techniques were not studied to possibly share a predictor over multiple concurrent cores.  However, although this is possible, we believe this would not 
+be a fruitful area of research due to the fact that multiple cores do not have locality in an program,space,or time sense.
+\item The details of physical implementation deserve further study.  A large bht per core or per context would be a significant amount of die space, and each
+element in the table would need to be able to handle multiple concurrent accesses from multiple threads in a single clock, which may prove to be difficult practically.
+\end{enumerate}
 
 \bibliographystyle{IEEEtran}
 \bibliography{gpu_predict_paper}
