@@ -6,6 +6,27 @@
 	url = {http://s09.idav.ucdavis.edu/}
 }
 
+@article{ispass09,
+    abstract = {{Modern graphic processing units (GPUs) provide sufficiently flexible programming models that understanding their performance can provide insight in designing tomorrow's manycore processors, whether those are GPUs or otherwise. The combination of multiple, multithreaded, SIMD cores makes studying these GPUs useful in understanding tradeoffs among memory, data, and thread level parallelism. While modern GPUs offer orders of magnitude more raw computing power than contemporary CPUs, many important applications, even those with abundant data level parallelism, do not achieve peak performance. This paper characterizes several non-graphics applications written in NVIDIA's CUDA programming model by running them on a novel detailed microarchitecture performance simulator that runs NVIDIA's parallel thread execution (PTX) virtual instruction set. For this study, we selected twelve non-trivial CUDA applications demonstrating varying levels of performance improvement on GPU hardware (versus a CPU-only sequential version of the application). We study the performance of these applications on our GPU performance simulator with configurations comparable to contemporary high-end graphics cards. We characterize the performance impact of several microarchitecture design choices including choice of interconnect topology, use of caches, design of memory controller, parallel workload distribution mechanisms, and memory request coalescing hardware. Two observations we make are (1) that for the applications we study, performance is more sensitive to interconnect bisection bandwidth rather than latency, and (2) that, for some applications, running fewer threads concurrently than on-chip resources might otherwise allow can improve performance by reducing contention in the memory system.}},
+    author = {Bakhoda, A. and Yuan, G. L. and Fung, W. W. L. and Wong, H. and Aamodt, T. M.},
+    booktitle = {Performance Analysis of Systems and Software, 2009. ISPASS 2009. IEEE International Symposium on},
+    citeulike-article-id = {6859108},
+    citeulike-linkout-0 = {http://dx.doi.org/10.1109/ISPASS.2009.4919648},
+    citeulike-linkout-1 = {http://ieeexplore.ieee.org/xpls/abs\_all.jsp?arnumber=4919648},
+    doi = {10.1109/ISPASS.2009.4919648},
+    isbn = {978-1-4244-4184-6},
+    keywords = {gpgpu-sim},
+    location = {Boston, MA, USA},
+    month = apr,
+    pages = {163--174},
+    posted-at = {2010-09-07 11:17:15},
+    priority = {5},
+    publisher = {IEEE},
+    title = {{Analyzing CUDA workloads using a detailed GPU simulator}},
+    url = {http://dx.doi.org/10.1109/ISPASS.2009.4919648},
+    year = {2009}
+}
+
 @InProceedings{SIG07,
 	author = {John Owens},
 	series = {SIGGRAPH 2007},
@@ -35,7 +56,7 @@
 @InProceedings{Luebke08,
 	author = {David Luebke},
 	url = {http://s08.idav.ucdavis.edu/luebke-nvidia-gpu-architecture.pdf},
-	title = {{GPU Architecture: Implications & Trends}},
+	title = {{GPU Architecture: Implications Trends}},
 	year = {2008},
 	series = {SIGGRAPH 2008}
 }
@@ -57,12 +78,12 @@
 }
 
 @INPROCEEDINGS{yags98,
-    author = {A. N. Eden and T. Mudge {ane},
+    author = {A. N. Eden and T. Mudge {ane}},
     title = {The YAGS branch prediction scheme},
     booktitle = {In Proceedings of the 31st Annual ACM/IEEE International Symposium on Microarchitecture},
     year = {1998},
-    pages = {69--77}
-	url = {http://www.eecs.umich.edu/~tnm/papers/yags.pdf}
+    pages = {69--77},
+    url = {http://www.eecs.umich.edu/~tnm/papers/yags.pdf}
 }
 
 @inproceedings{Yeh91,
@@ -79,5 +100,5 @@
  doi = {http://doi.acm.org/10.1145/123465.123475},
  acmid = {123475},
  publisher = {ACM},
- address = {New York, NY, USA},
+ address = {New York, NY, USA}
 } 

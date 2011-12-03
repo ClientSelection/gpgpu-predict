@@ -8,6 +8,7 @@
 % http://www.ieee.org/conferences_events/conferences/publishing/templates.html	
 
 \documentclass[conference]{IEEEtran}
+
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{array}
@@ -98,8 +99,14 @@ Email: \texttt{narnold@knights.ucf.edu}}
 
 \maketitle
 
-
 \begin{abstract} 
+
+Branch Prediction has long been used as a method of reducing the latency incurred by a control hazard.  However, traditionally, SIMT architectures 
+do not implement branch prediction hardware in order to reduce the complexity of each of the GPU cores.  Although the SIMT model provides some 
+opportunities for control hazard penalty reduction in the form of context switching, there are several cases where the penalty is incurred regardless.
+We experimented with the application of a branch predictor to a SIMT architecture in order to reduce those hazards.  Furthermore, our model is 
+capable of sharing information about symmetric runs from multiple concurrent contexts.  By using a shared Smith\_2 branch predictor with a large branch history table,
+we can demonstrate significantly increased prediction accuracy over a traditional single-context scheme.
 
 \end{abstract}
 
@@ -107,19 +114,43 @@ Email: \texttt{narnold@knights.ucf.edu}}
 
 
 \section{Introduction}
+There is a great deal of interest in the evolution of Single-Instruction Multiple-Thread (SIMT) architectures in recent years.  Due to
+their tremendous performance and parallelism, as well as an increased generality of these architectures for scientific applications, these 
+types of architectures have moved beyond their traditional application in graphics programming to many other application domains, and are becoming more and more useful.
+In addition, another factor driving their development is their rapid architectural evolution, which is facilitated by the fact that they do not have a standard instruction set
+to implement.  
 
+The SIMT model, which we describe in more detail in \ref{simt-description}, is not without its flaws.  In order to achieve greater parallelism and 
+FLOPS, SIMT processors often remove a lot of the superscalar architectural features such as caching, predication, branch prediction,out-of-order execution, and sometimes even pipelining.
+These features are replaced with multiple concurrent contexts of execution, known as 'threads'.
 
+However, we believe that benefit can be gained from re-integrating one of those superscalar features: specifically, branch prediction, to gain 
+performance by reducing the latency from control hazards that occur when the incorrect instruction is fetched during a jump.  
+
+In addition, we make the observation that branch prediction on a SIMT architecture can actually perform better then branch prediction on a MIMD architecure like a modern multicore CPU.
+The intuition for this observation, described in \ref{intuition}, derives from the fact that the SIMT model guarantees that each context of execution
+is not working alone, but in teams, called context groups or 'warps', and each of these context groups is also working on a single core.  Whereas traditional branch prediction
+is limited to predicting based on knowledge gained from the past, SIMT branch prediction schemes are able to gain information about the present and near-future, by sharing information
+about execution with its peer contexts and context-groups.
+
+We demonstrate an implementation of this scheme using a Smith\_2 predictor described in \ref{predictor_table}.  Our implementation runs in simulation \cite{ispass09},
+and demonstrates the impact of sharing no information (traditional MIMD model), sharing information per context group, and sharing information per core.
+
+Our experiment demonstrates that utilizing peer information in the SIMT model provides a significantly improved prediction accuracy rate over the MIMD model
+for a subset of the ISPASS09 \cite{ispass09} benchmarking set.
 
 \section{Related Work}
 
 \subsection{Branch Prediction}
 
-We first wanted to take a look at some techniques being researched about how to structure branch predictors in order to see if there were any innovations that would perform better over what we had already learned in class.  We came across a paper by Yeh and Patt \cite{Yeh91}.  They discussed implementing an adaptive branch predictor that would use information being collected at runtime, as opposed to other schemes which would require a pre-run of the program for training.  Their setup requires a Branch History Table and a Branch History Pattern Table, which is updated based on the outcomes of the branches during run-time.  This seemed useful to use due to the fact that their approach would be utilizing run-time information, which is something we are striving to utilize, as well.
+Yeh and Patt \cite{Yeh91} discussed implementing an adaptive branch predictor that would use information being collected at runtime, as opposed to other schemes which would require a pre-run of the program for training.  Similar to our approach, their setup requires a Branch History Table and a Branch History Pattern Table, which is updated based on the outcomes of the branches during run-time.
 
-Another branch prediction paper we came across was by Eden and Mudge \cite{yags98}.  They developed YAGS, or Yet Another Global Scheme, which is a combination of several strong points of previously implemented schemes.  Using information from implementations such as GShare, the Agree Predictor, the Bi-Mode Predictor, the Skewed Branch Predictor, and the Filter Mechanism, the authors use some schemes to implement a predictor to store the biases of branches and other schemes to implement a predictor to store the direction of those branches.  This seemed useful to us because the two varieties of predictor catch not only the regular behavior of branches, but also the special cases instead of just allowing them to be mispredictions.
+Eden and Mudge \cite{yags98} developed YAGS, or Yet Another Global Scheme, which is a combination of several strong points of previously implemented schemes.  Using information from implementations such as GShare, the 
+Agree Predictor, the Bi-Mode Predictor, the Skewed Branch Predictor, and the Filter Mechanism, the authors 
+use some schemes to implement a predictor to store the biases of branches and other schemes to implement a predictor to store the 
+direction of those branches.  The two varieties of predictor catch not only the regular behavior of branches, but also the special cases instead of just allowing them to be mispredictions.
 
-In a paper by Pan, So, and Rahmeh \cite{Pan92}, we saw another attempt at improved branch prediction, this time by referencing a subhistory of branch in addition to the branch history table itself.  They claim that by adding only a shift register to the architecture, they were able to achieve an additional 11\% prediction accuracy.  This was interesting to us because it potentially showed us another way we could increase our own accuracy without a vast amount of extra hardware.
-
+Pan, So, and Rahmeh \cite{Pan92}, also attempted improved branch prediction, this time by referencing a subhistory of branch in addition to the branch history table itself.  They claim that by adding only a shift register to the architecture, they were able to achieve an additional 11\% prediction accuracy.
 \subsection{GPU Architectures}
 
 We next wanted to look at a variety of GPU architecture literature to see what is currently being done on the GPU with regards to branch prediction.  We found several SIGGRAPH course presentations which gave us a large amount of information about GPU architectures \cite{Luebke08, Sig07, Sig09}.  In the NVIDIA Research presentation \cite{Luebke08}, we learned that the GPU architecture has become less and less hardward bound as more and more parts of the GPU pipeline are allowing user programmability.  This presentation also gave us some insight as to how the GPU assigns threads to cores in groups called 'warps'.
@@ -130,7 +161,7 @@ The SIGGRAPH 2007 talk \cite{Sig07} talks more about the progression of the use 
 
 \subsection{Branch Prediction on GPU}
 
-We found one paper of someone who previously attempted to do some type of branch prediction on the GPU.  He and Zhang \cite{Zhang09} attempted to use a GPU, which has a many-core architecture, to test out parallel branch prediction for future use in general purpose many-core CPUs.  Their goals were to get independent branch predictors operating on different cores to cooperate with each other in an effort to:
+He and Zhang \cite{Zhang09} also attempt branch prediction on the GPU.  Their focus, however, was to to test out parallel branch-prediction on GPUs for future use in general purpose many-core CPUs.  Their goals were to get independent branch predictors operating on different cores to cooperate with each other in an effort to:
 
 \begin{enumerate}
 	\item increase prediction accuracy,
@@ -138,57 +169,77 @@ We found one paper of someone who previously attempted to do some type of branch
 	\item switch them off if they are behaving the same in order to save power.
 \end{enumerate}
 
-This paper caught our attention because it involved branch prediction on the GPU, but we realized that the authors were using the GPU to test CPU-style computations, and our goals are to try and use branch prediction to improve GPU-style computations using GPU workflows.
+However, the authors use the GPU to test CPU-style computations, not exploiting the parallel neighbor efforts of the SIMT model.  Their efforts apply to CPU-style runtime paradigms but tested on a GPU, compared to our approach that truely exploits the SIMT nature of GPU-style computations.
 
-\section{Technical Sections}
-
+\section{SIMT vs MIMD }
+\label{simt-description}
 In general, CPU architecture is different than GPU architecture in a few ways.  CPU architecture includes logic for the fetch and decode phases, an ALU for execution, the execution context (registers, etc.), control logic, branch predictor, memory pre-fetcher, and the data cache.  With this setup, a general CPU is designed to perform Single Instruction, Single Data (SISD) operations well, but performs poorly on Single Instruction, Multiple Data (SIMD), Multiple Instruction, Single Data (MISD), and Multiple Instruction, Multiple Data (MIMD).  GPU architecture removes all of the logic designed to make single threaded processes run more efficiently.  There is no control logic, no branch predictor, no memory pre-fetcher, and no data cache [CITE].  With this architecture, a general GPU is designed to perform SIMD operations well, but performs poorly on SISD, MISD, and MIMD. 
 
 \begin{center}
 		\includegraphics[width=.2\textwidth]{CPU-design.jpg} 
-		\captionof{figure}{} 
+		\captionof{figure}{A general-purpose CPU core} 
 \end{center}
+
+In contrast, a SIMT architecture often has none of these featuresets, but has many more concurrent ALU threads or 'contexts' on the die.
 
 \begin{center}
 	\includegraphics[width=.2\textwidth]{GPU-Design.jpg}
-	\captionof{figure}{}
+	\captionof{figure}{a single simple GPU core}
 \end{center}
 
 Recently, CPU designers have begun building chips with multiple cores.  This gives the CPU the ability to run SISD and MISD operations well, however there are still performance issues with SIMD and MIMD.  GPU design has been taking advantage of multiple cores per chip for years, and since the archtecture takes up less room than a traditional CPU core, a GPU is capable of fitting many cores on the chip.  This gives the GPU the ability to run SIMD and MIMD operations well.  However, due to the multiple contexts per core, and how the data elements are assigned to these cores, the GPU is not well designed to handle SISD or MISD operations well.
 
 \begin{center}
 		\includegraphics[width=.2\textwidth]{Multicore-CPU-design.jpg} 
-		\captionof{figure}{} 
+		\captionof{figure}{A multicore CPU design} 
 \end{center}
 
 \begin{center}
 	\includegraphics[width=.2\textwidth]{GPU-Design---multiple-cores.jpg}
-	\captionof{figure}{}
+	\captionof{figure}{A multicore GPU design}
 \end{center}
 
 GPU cores have the ability to modify their context storage areas to vary the number of context elements it holds (by modifying the size of the context elements), which affects the number of context groups for the core to alternate between during computation.  These alternating context groups is how the GPU tries to hide data stalls.  When a group encounters a branch, since there is no forwarding logic, the group must wait for the data.  While this is happening, the core switches to the next group and performs the same instructions that it just executed on the previous group.  By alternating these groups in this manner, called interleaving, the GPU can hide the vast majority of data stalls or branch calculation waits.
 
 \begin{center}
 	\includegraphics[width=.45\textwidth]{GPU-context-interleaving.jpg}
-	\captionof{figure}{}
+	\captionof{figure}{GPU Context switching}
 \end{center}
 
 However, what if the stall time exceeds the amount of time it would take this particular GPU core to alternate amongst all if its context groups?  In this case, there is nothing that can be done to avoid the stall, and the core must wait.  But what if this could be avoided?  Our proposal will endeavor to solve this problem.
 \begin{center}
 	\includegraphics[width=.45\textwidth]{GPU-context-interleaving-2.jpg}
-	\captionof{figure}{}
+	\captionof{figure}{GPU context switch failure.}
 \end{center}
 
 The collection of all context belonging to one GPU core is called a 'warp', and the number of contexts in a warp is  its 'warp factor'.  All contexts within a warp will be subjected to the same instruction stream.  As mentioned before, these contexts will be processed context group by context group.  Due to the nature of how data is assigned to these context elements, there is a great deal of spatial locality amongst the contexts in a warp.  Our proposal believes that there is a way to use the information discovered by the first context group being processed by an instruction stream to assist later context groups in their knowledge of stalls.
 
 On a CPU, each core only has one execution context and one branch prediction table.  This shows that each context handles its own branches and receives no external assistance from other threads.  No external assistance can be offered becuase there is no way to guarantee what the other threads are working on and if it could be useful to the current thread.  In contrast, a GPU core has multiple contexts per core that are all performing the same operations.  Is it possible to use this information to assist other contexts in their branch stalls?
 
-We propose to implement 3 GPU Branch Predictors with the following features:
+\section{Contribution}
+
+\subsection{SIMT Branch Predictor Functional Unit}
+In addition, the size of the branch history table will be exactly the size of the maximum instruction stream length, which is 16,384 instructions.  We chose this size so that there would be absolutely no predictor collisions, and each instruction location will have its own dedicated predictor.  The predictors we will be using are Smith 2-bit predictors.
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{bht.png}
+	\captionof{figure}{Smith 2-bit predictor.}
+\end{center}
+
+We will compare prediction accuracies across these three implementations.  Our goal is that after the initial training of the predictors, the GPU cores will process their contexts groups as shown in the figure below:
+
+\begin{center}
+	\includegraphics[width=.45\textwidth]{GPU-predict-context.jpg}
+	\captionof{figure}{Context interleaving is not necessary, as the groups are properly predicting where to branch and continue operation.}
+\end{center}
+
+We propose to implement 3 GPU Branch Prediction schemes with the following features:
 \begin{itemize}
 	\item One predictor is shared amongst the contexts within a GPU core
 	\item One predictor is shared only amongst its context group (1 per group)
 	\item One predictor is shared only amongst its context (1 per context)
 \end{itemize}
+
 
 \begin{center}
 	\includegraphics[width=.2\textwidth]{Our-GPU---per-core-predictor.jpg}
@@ -205,19 +256,6 @@ We propose to implement 3 GPU Branch Predictors with the following features:
 	\captionof{figure}{One BHT for each individual context. This implementation most closely resembles how a general CPU would handle branch prediction.}
 \end{center}
 
-In addition, the size of the branch history table will be exactly the size of the maximum instruction stream length, which is 16,384 instructions.  We chose this size so that there would be absolutely no predictor collisions, and each instruction location will have its own dedicated predictor.  The predictors we will be using are Smith 2-bit predictors.
-
-\begin{center}
-	\includegraphics[width=.45\textwidth]{bht.png}
-	\captionof{figure}{Smith 2-bit predictor.}
-\end{center}
-
-We will compare prediction accuracies across these three implementations.  Our goal is that after the initial training of the predictors, the GPU cores will process their contexts groups as shown in the figure below:
-
-\begin{center}
-	\includegraphics[width=.45\textwidth]{GPU-predict-context.jpg}
-	\captionof{figure}{Context interleaving is not necessary, as the groups are properly predicting where to branch and continue operation.}
-\end{center}
 
 \section{Simulation Methodology}
 
@@ -269,7 +307,7 @@ Second, we noticed that the per group and per core predictors performed worse th
 \section{References}
 
 \bibliographystyle{IEEEtran}
-\bibliography{IEEEabrv,gpu_predict_paper}
+\bibliography{gpu_predict_paper}
 
 
 % An example of a floating figure using the graphicx package.
