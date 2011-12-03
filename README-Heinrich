@@ -1,0 +1,10 @@
+This is our final project.  It is a fork of the GPGPU-Sim repository at https://dev.ece.ubc.ca/projects/gpgpu-sim/.
+
+The v3.x folder contains the modified source code of our simulator.  We only modified shader.h and shader.cc in src/gpgpu-sim, although we spent quite a long time reading the entire rest of the code for the simulator to make sure those were the right files.  Follow the instructions from the website and the v3.x readme file (not ours) to set up your environment and build the simulator. If you just want to see the changes, you can diff shader.h and shader.cc against shader-orig.h and shader-orig.cc in that directory.
+
+The doc/ folder contains the source and binaries for our final presentation and our final report, although I have sent those seperately from this zip file as well.
+
+The ispass09 contains the benchmarks directory.  In theory they can be built by running our custom makefile make -f Makefile-out under a suitable environment that is set up according to the readme file from GPGPU-sim's instructions, however, I had some trouble with that.  However, the prebuilt binaries included here should run on an ubuntu amd64 machine.  Make sure before they are run that the LD_LIBRARY_PATH includes v3.x/build/release so that the binaries load the compiled simulator instead of the system, and then run make -f benchmarkdata.mk
+
+
+Please don't hesitate to email us if you would like a demonstration.
